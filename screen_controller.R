@@ -7,15 +7,18 @@ test_get <- function() {
 
 #* Screen files using the eesyscreener package
 #* @parser multi
-#* @parser form
 #* @parser csv
 #* @serializer unboxedJSON
 #* @post /screen
-test_post <- function(req, res) {
+screen <- function(req, res) {
     library(eesyscreener)
+    library(vroom)
 
     result <- tryCatch({
-        result <- screen_files(req$body$dataFile$filename, req$body$metaFile$filename, req$body$dataFile, req$body$metaFile)
+        data_frame <- vroom(req$body$dataFile$value)
+        meta_data_frame <- vroom(req$body$metaFile$value)
+
+        result <- screen_files(req$body$dataFile$filename, req$body$metaFile$filename, data_frame, meta_data_frame)
         res$status <- 200
         res$body <- result
     }, warning = function(w) {
@@ -23,7 +26,7 @@ test_post <- function(req, res) {
     }, error = function(e) {
         print(paste0("Error details: ", e))
         res$status <- 400
-        res$body <- paste0("An unhandled exception occurred in eesyscreener, indicating a malformed data or meta file: ", e)
+        res$body <- paste0("An unhandled exception occurred in eesyscreener: ", e)
         # TODO: Add logging
     }, finally = {
         # Intentionally blank
