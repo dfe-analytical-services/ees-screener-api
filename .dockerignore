@@ -1,0 +1,6 @@
+.vs*
+*[dD]ocker*
+.git*
+*.yml
+example-data/
+README.md
