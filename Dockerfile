@@ -1,4 +1,8 @@
-FROM mcr.microsoft.com/azure-functions/base:4-slim
+# FROM mcr.microsoft.com/azure-functions/dotnet:4-appservice 
+FROM mcr.microsoft.com/azure-functions/dotnet:4
+
+ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
+    AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
     dirmngr \
@@ -15,8 +19,5 @@ RUN R -e "pak::pkg_install('plumber')"
 RUN R -e "pak::pkg_install('dfe-analytical-services/eesyscreener')"
 RUN R -e "pak::pkg_install('readr')"
 
-COPY / /
-
-EXPOSE 8000
-
-ENTRYPOINT ["Rscript", "server.R"]
+WORKDIR /home/site/wwwroot
+COPY / /home/site/wwwroot
