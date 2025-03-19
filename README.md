@@ -1,6 +1,6 @@
 # dfe-ees-screener
 
-Proof of concept for dockerising an R Plumber API for the [DfE's data screener](https://github.com/dfe-analytical-services/eesyscreener).
+A containerised Azure Function App consisting of an R Plumber API for the [DfE's data screener](https://github.com/dfe-analytical-services/eesyscreener).
 
 ## Running the R services directly
 
@@ -49,10 +49,10 @@ and call the Azure Function endpoint at http://localhost/api/screen.
 
 The API can also be run directly from a local development environment, assuming that the required dependencies 
 have been installed. This includes:
-* (Azure Functions Core Tools)[https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-csharp#install-the-azure-functions-core-tools].
+* [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-csharp#install-the-azure-functions-core-tools).
 * RScript, the eesyscreener R package and the various dependencies that eesyscreener will need to run.
   For a full list of steps to install the dependencies required, refer to the commands executed in the
-  (Dockerfile)[./Dockerfile]/  
+  [Dockerfile](./Dockerfile).  
 
 After installing the above, the Azure Functions runtime can be started with:
 
