@@ -1,6 +1,6 @@
 #* Test the service is running
 #* @serializer unboxedJSON
-#* @get /screen
+#* @get /api/screen
 test_get <- function() {
     list("Success")
 }
@@ -9,7 +9,7 @@ test_get <- function() {
 #* @parser multi
 #* @parser csv
 #* @serializer unboxedJSON
-#* @post /screen
+#* @post /api/screen
 screen <- function(req, res) {
     library(eesyscreener)
     library(vroom)
