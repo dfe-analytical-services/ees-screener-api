@@ -1,10 +1,3 @@
-#* Test the service is running
-#* @serializer unboxedJSON
-#* @get /api/screen
-test_get <- function() {
-    list("Success")
-}
-
 #* Screen files using the eesyscreener package
 #* @parser multi
 #* @parser csv

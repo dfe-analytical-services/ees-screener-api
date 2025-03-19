@@ -12,9 +12,10 @@ A containerised Azure Function App consisting of an R Plumber API for the [DfE's
 4. Open up Postman/PowerShell/curl etc. to hit the endpoints:
 
 ```
-GET localhost:8000/api/screen
+GET localhost:8000/api/healthcheck
 POST localhost:8000/api/screen
 ```
+
 > The GET endpoint is just to confirm the API is running.
 
 > For the POST endpoint, `dataFile` and `metaFile` arguments should be submitted with a `form-data` request body. Example files can be found in the "example-data" folder
@@ -23,7 +24,7 @@ POST localhost:8000/api/screen
 
 1. Ensure that Rscript is executable (check with `Rscript --version`).
 2. Run: `Rscript server.R`
-3. Call an endpoint at `http://localhost:8000/api/screen`.
+3. Call an endpoint at `http://localhost:8000/api/<resource>`.
 
 ## Running the R services via the Azure Fucntions runtime
 
@@ -47,12 +48,13 @@ and call the Azure Function endpoint at http://localhost/api/screen.
 
 ### Locally
 
-The API can also be run directly from a local development environment, assuming that the required dependencies 
+The API can also be run directly from a local development environment, assuming that the required dependencies
 have been installed. This includes:
-* [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-csharp#install-the-azure-functions-core-tools).
-* RScript, the eesyscreener R package and the various dependencies that eesyscreener will need to run.
+
+- [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-csharp#install-the-azure-functions-core-tools).
+- RScript, the eesyscreener R package and the various dependencies that eesyscreener will need to run.
   For a full list of steps to install the dependencies required, refer to the commands executed in the
-  [Dockerfile](./Dockerfile).  
+  [Dockerfile](./Dockerfile).
 
 After installing the above, the Azure Functions runtime can be started with:
 
@@ -78,7 +80,7 @@ pak::lockfile_create(pkg = c("plumber", "github::dfe-analytical-services/eesyscr
 
 ## Testing
 
-If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_Controller.R`:
+If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_controller.R`:
 
 ```
 result <- screen_files(req$body$dataFile$filename, req$body$metaFile$filename, req$body$dataFile, req$body$metaFile)
