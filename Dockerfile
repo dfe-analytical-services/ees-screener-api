@@ -18,6 +18,7 @@ RUN R -e "install.packages('pak')"
 RUN R -e "pak::pkg_install('plumber')"
 RUN R -e "pak::pkg_install('dfe-analytical-services/eesyscreener')"
 RUN R -e "pak::pkg_install('readr')"
+RUN R -e "pak::pkg_install('AzureStor')"
 
 WORKDIR /home/site/wwwroot
 COPY / /home/site/wwwroot
