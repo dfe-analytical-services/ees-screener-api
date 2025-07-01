@@ -1,4 +1,4 @@
-# dfe-ees-screener
+# DfE EES Screener API
 
 A containerised Azure Function App consisting of an R Plumber API for the [DfE's data screener](https://github.com/dfe-analytical-services/eesyscreener).
 
@@ -33,13 +33,13 @@ The API can also be run in a Docker container that is running the Azure Function
 Open up a terminal in the root of the project, and create an image using
 
 ```
-docker build -t eesyscreener .
+docker build -t data-screener .
 ```
 
 then run it using
 
 ```
-docker run --rm --name eesyscreener --network explore-education-statistics_default -p 80:80 eesyscreener
+docker run --rm --name data-screener --network explore-education-statistics_default -p 7078:80 data-screener
 ```
 
 and call the Azure Function endpoint at http://localhost/api/screen.
