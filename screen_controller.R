@@ -14,8 +14,12 @@ screen <- function(req, res) {
     library(vroom)
     library(AzureStor)
 
-    endpoint <- blob_endpoint("http://data-storage:10000/devstoreaccount1", key = "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==")
-    container <- blob_container(endpoint, "releases-temp")
+    storage_account_url <- Sys.getenv("STORAGE_URL")
+    storage_account_key <- Sys.getenv("STORAGE_KEY")
+    blob_container_name <- Sys.getenv("STORAGE_CONTAINER_NAME")
+
+    endpoint <- blob_endpoint(storage_account_url, key = storage_account_key)
+    container <- blob_container(endpoint, blob_container_name)
 
     data_file_name <- req$body$dataFileName
     data_file_path <- req$body$dataFilePath
