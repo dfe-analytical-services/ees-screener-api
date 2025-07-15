@@ -14,7 +14,7 @@ See [Request format](#request-format) for details on how to contruct API request
 4. Open up Postman/PowerShell/curl etc. to hit the endpoints:
 
 ```
-GET localhost:8000/api/healthcheck
+GET localhost:8000/api/screen
 POST localhost:8000/api/screen
 ```
 
@@ -22,7 +22,7 @@ POST localhost:8000/api/screen
 
 1. Ensure that Rscript is executable (check with `Rscript --version`).
 2. Run: `Rscript server.R`
-3. Call an endpoint at `http://localhost:8000/api/<resource>`.
+3. Call an endpoint at `http://localhost:8000/api/screen`.
 
 ## Running the R services via the Azure Functions runtime
 
@@ -82,18 +82,18 @@ pak::lockfile_create(pkg = c("plumber", "github::dfe-analytical-services/eesyscr
 
 ### Azurite
 
-The screener's `POST` endpoint retrieves files from a local blob storage container, based on the paths supplied in the request body. The connection details are obtained from environment variables set on the Docker container by the main EES project's `docker-compose.yml` file, and relate to the same storage container used by the main EES solution. This container can be started up by opening a terminal in the main project directory and running the start script, e.g.:
+The screener's `POST` endpoint retrieves files from a local blob storage container based on the paths supplied in the request body. The connection details hard-coded into [screen_Controller.R](./screen_Controller.R) relate to the same storage container used by the main EES solution. This container can be started up by opening a terminal in the main project directory and running the start script, e.g.:
 
 ```
 cd source/repos/dfe-analytical-services/explore-education-statistics
 pnpm start dataStorage
 ```
 
-If using a different storage container, the connection details can be changed by replacing the destination URL, key and container name in the `docker-compose.yml` file of the main EES project. If you are running the API independently of EES, these values can instead be defined in this repository's Dockerfile. If using a custom storage container, ensure both containers are assigned to the same `network`, as this allows cross-container communication.
+If using a different storage container, the connection details can be changed by replacing the destination URL, key and container name in the controller. The custom storage container should also be assigned a `network`, so that the API can be started within the same network to allow cross-container communication.
 
 ## Request format
 
-The `GET` endpoint is just a health check to confirm the API is running, and expects no parameters: `GET <url>/api/healthcheck`.
+The `GET` endpoint is just a health check to confirm the API is running, and expects no parameters: `GET <url>/api/screen`.
 
 The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body in the following format:
 
@@ -112,7 +112,7 @@ The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body 
 
 ## Testing
 
-If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_controller.R`:
+If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_Controller.R`:
 
 ```
 result <- screen_files(data_file_name, meta_file_name, data_frame, meta_data_frame)
