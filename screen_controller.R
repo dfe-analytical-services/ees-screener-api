@@ -11,7 +11,6 @@ test_get <- function() {
 #* @post /api/screen
 screen <- function(req, res) {
     library(eesyscreener)
-    library(vroom)
     library(AzureStor)
 
     storage_account_url <- Sys.getenv("STORAGE_URL")
@@ -30,10 +29,7 @@ screen <- function(req, res) {
     meta_file <- storage_download(container, src = meta_file_path, dest = NULL)
 
     result <- tryCatch({
-        data_frame <- vroom(data_file)
-        meta_data_frame <- vroom(meta_file)
-
-        result <- screen_files(data_file_name, meta_file_name, data_frame, meta_data_frame)
+        result <- screen_files(data_file, meta_file, data_file_name, meta_file_name)
         res$status <- 200
         res$body <- result
     }, warning = function(w) {

@@ -112,16 +112,16 @@ The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body 
 
 ## Testing
 
-If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_Controller.R`:
+If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_controller.R`:
 
-```
-result <- screen_files(data_file_name, meta_file_name, data_frame, meta_data_frame)
+``` r
+result <- eesyscreener::screen_csv(data_file, meta_file, data_file_name, meta_file_name)
 ```
 
 with
 
-```
-write.csv(example_data, "example_data.csv", row.names = FALSE)
-write.csv(example_data.meta, "example_data.meta.csv", row.names = FALSE)
-result <- screen_files("example_data.csv", "example_data.meta.csv", example_data, example_data.meta)
+``` r
+write.csv(eesyscreener::example_data, "example_data.csv", row.names = FALSE)
+write.csv(eesyscreener::example_meta, "example_data.meta.csv", row.names = FALSE)
+result <- eesyscreener::screen_csv("example_data.csv", "example_data.meta.csv")
 ```
