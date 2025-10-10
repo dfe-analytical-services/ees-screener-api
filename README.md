@@ -72,13 +72,17 @@ http://localhost:7071/api/screen
 
 ### Packages
 
-You may need to run `pak::lockfile_install` in the R terminal to install dependencies before running the API locally.
+You will need to restore the R packages from the lockfile to install dependencies before running the API locally.
 
-If any additional dependencies are added, run the following command to update the lockfile before commiting changes.
+[renv](https://rstudio.github.io/renv/index.html) can be particularly slow when installing packages, however, you can set your renv config to use [pak](https://pak.r-lib.org/) instead (a faster R package installer) by setting `RENV_CONFIG_PAK_ENABLED=TRUE` as an environment variable. You can then run the following renv command to restore the packages using pak behind the scenes:
 
+``` r
+renv::restore()
 ```
-pak::lockfile_create(pkg = c("plumber", "github::dfe-analytical-services/eesyscreener", "readr", "AzureStor", "<additional dependency 1>", "<additional dependency 2>"))
-```
+
+If renv isn't already installed, run `install.packages("renv")` first.
+
+If any additional dependencies are added, run `renv::snapshot()` to update the lockfile before commiting changes. To automatically update packages to their latest versions, run `renv::update()`. More details and commands are available in the [renv documentation](https://rstudio.github.io/renv/index.html).
 
 ### Azurite
 
