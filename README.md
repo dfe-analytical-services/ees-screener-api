@@ -97,7 +97,7 @@ The `GET` endpoint is just a health check to confirm the API is running, and exp
 
 The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body in the following format:
 
-```
+``` json
 {
     "dataFileName": "data.csv",
     "dataFilePath": "00ffd291-2ff2-4b65-46c5-08dd9ec03382/data/0d5a5bc6-b12c-4ed4-986e-517679b49f88",
@@ -112,6 +112,23 @@ The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body 
 
 ## Testing
 
+Unit tests have been setup using [testthat](https://testthat.r-lib.org/) and [mirai](https://mirai.r-lib.org/index.html), you can run them locally using:
+
+``` r
+testthat::test_dir("tests/testthat")
+```
+
+If one of the environment variables isn't set from "STORAGE_URL", "STORAGE_KEY" or "STORAGE_CONTAINER_NAME". Then the API will fallback to looking a local file, for example you can then supply the paths to the example-data in this repo
+
+``` json
+{
+    "dataFileName": "one.csv",
+    "dataFilePath": "example-data/one.csv",
+    "metaFileName": "one.data.csv",
+    "metaFilePath:": "example-data/one.meta.csv"
+}
+```
+
 If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_controller.R`:
 
 ``` r
@@ -125,3 +142,5 @@ write.csv(eesyscreener::example_data, "example_data.csv", row.names = FALSE)
 write.csv(eesyscreener::example_meta, "example_data.meta.csv", row.names = FALSE)
 result <- eesyscreener::screen_csv("example_data.csv", "example_data.meta.csv")
 ```
+
+this will generate some new test data files that should always pass the screening.
