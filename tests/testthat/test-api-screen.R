@@ -13,10 +13,10 @@ testthat::test_that("gets the success message", {
 
 testthat::test_that("POST returns success and expected structure for valid local files", {
   body <- list(
-    dataFileName = "one.csv",
-    dataFilePath = "example-data/one.csv",
-    metaFileName = "one.meta.csv",
-    metaFilePath = "example-data/one.meta.csv"
+    dataFileName = "pass.csv",
+    dataFilePath = "example-data/pass.csv",
+    metaFileName = "pass.meta.csv",
+    metaFilePath = "example-data/pass.meta.csv"
   )
   resp <- httr::POST(
     paste0(api_url(), "/api/screen"),
@@ -25,12 +25,20 @@ testthat::test_that("POST returns success and expected structure for valid local
   )
 
   expect_equal(httr::status_code(resp), 200)
-  
+
   result <- httr::content(resp, as = "parsed")
 
   expect_true(is.list(result))
-  expect_equal(names(result), c("results_table", "overall_stage", "overall_message", "api_suitable"))
-  expect_equal(names(result[["results_table"]][[1]]), c("check", "result", "message", "stage"))
+
+  # These depend on eesyscreener, but are here to catch breaking changes to structure
+  expect_equal(
+    names(result),
+    c("results_table", "overall_stage", "passed", "api_suitable")
+  )
+  expect_equal(
+    names(result[["results_table"]][[1]]),
+    c("check", "result", "message", "stage")
+  )
 })
 
 testthat::test_that("POST returns error for missing files", {
@@ -48,6 +56,7 @@ testthat::test_that("POST returns error for missing files", {
 
   expect_equal(httr::status_code(resp), 400)
   result <- httr::content(resp, as = "text")
-  
+
+  # error message originates from eesyscreener
   expect_match(result, "unhandled exception.*No file found")
 })
