@@ -8,7 +8,7 @@ See [Request format](#request-format) for details on how to contruct API request
 
 ### If you have R set up already
 
-1. `renv::restore()` - install dependencies
+1. `pak::lockfile_____()` - install dependencies
 2. `source("server.R")` - set API running
 3. The API endpoint will then be live at `http://localhost:8000/api/screen`
 
@@ -50,7 +50,7 @@ docker run --rm --name data-screener --network explore-education-statistics_defa
 
 and call the Azure Function endpoint at http://localhost/api/screen.
 
-> ℹ️ The `--network` parameter used here assumes you are using the storage container configured by the main EES project (see [Dependencies > Azurite](#azurite) for details on how to contruct API requests for further details).
+> ℹ️ The `--network` parameter used here assumes you are using the storage container configured by the main EES project (see [Dependencies > Azurite](#azurite) for details on how to construct API requests for further details).
 
 ### Locally
 
@@ -86,9 +86,31 @@ You will need to restore the R packages from the lockfile to install dependencie
 renv::restore()
 ```
 
+``` r
+pak::lockfile_create(
+    c(
+        "plumber",
+        "testthat",
+        "mirai",
+        "AzureStor",
+        "purrr",
+        "withr",
+        "httr2"#,"dfe-analytical-services/eesyscreener@v0.1.2"
+    )
+)
+```
+
+
 If renv isn't already installed, run `install.packages("renv")` first.
 
 If any additional dependencies are added, run `renv::snapshot()` to update the lockfile before commiting changes. To automatically update packages to their latest versions, run `renv::update()`. More details and commands are available in the [renv documentation](https://rstudio.github.io/renv/index.html).
+
+To update the version of the eesyscreener package specifically, getting the latest published version on GitHub, run the following in R:
+
+``` r
+pak::pak("dfe-analytical-services/eesyscreener")
+renv::snapshot()
+```
 
 ### Azurite
 
@@ -163,7 +185,6 @@ request body
     "metaFilePath:": "example-data/fail.meta.csv"
 }
 ```
-
 
 If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_controller.R`:
 

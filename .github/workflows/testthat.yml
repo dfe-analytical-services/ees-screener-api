@@ -29,15 +29,14 @@ jobs:
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
 
-      - name: Restore packages
+      - name: Install packages
         shell: Rscript {0}
         run: |
-          options(renv.config.pak.enabled = TRUE)
-          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-          if (file.exists("renv.lock")){
-             renv::restore()
+          if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
+          if (file.exists("pkg.lock")){
+             pak::lockfile_install()
           } else {
-             warning("No renv.lock file found")
+             warning("No pkg.lock file found")
           }
 
       - name: Run tests
