@@ -77,7 +77,7 @@ You may need to run `pak::lockfile_install` in the R terminal to install depende
 If any additional dependencies are added, run the following command to update the lockfile before commiting changes.
 
 ```
-pak::lockfile_create(pkg = c("plumber", "github::dfe-analytical-services/eesyscreener", "readr", "AzureStor", "<additional dependency 1>", "<additional dependency 2>"))
+pak::lockfile_create(pkg = c("plumber", "github::dfe-analytical-services/eesyscreener", "AzureStor", "<additional dependency 1>", "<additional dependency 2>"))
 ```
 
 ### Azurite
@@ -114,13 +114,13 @@ The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body 
 
 If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_controller.R`:
 
-``` r
+```r
 result <- eesyscreener::screen_csv(data_file, meta_file, data_file_name, meta_file_name)
 ```
 
 with
 
-``` r
+```r
 write.csv(eesyscreener::example_data, "example_data.csv", row.names = FALSE)
 write.csv(eesyscreener::example_meta, "example_data.meta.csv", row.names = FALSE)
 result <- eesyscreener::screen_csv("example_data.csv", "example_data.meta.csv")
