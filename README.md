@@ -2,13 +2,13 @@
 
 A containerised Azure Function App consisting of an R Plumber API for the [DfE's data screener](https://github.com/dfe-analytical-services/eesyscreener).
 
-See [Request format](#request-format) for details on how to contruct API requests.
+See [Request format](#request-format) for details on how to construct API requests.
 
 ## Running the R services directly
 
 ### If you have R set up already
 
-1. `pak::lockfile_____()` - install dependencies
+1. `pak::lockfile_install()` - install dependencies
 2. `source("server.R")` - set API running
 3. The API endpoint will then be live at `http://localhost:8000/api/screen`
 
@@ -80,11 +80,11 @@ http://localhost:7071/api/screen
 
 You will need to restore the R packages from the lockfile to install dependencies before running the API locally.
 
-[renv](https://rstudio.github.io/renv/index.html) can be particularly slow when installing packages, however, you can set your renv config to use [pak](https://pak.r-lib.org/) instead (a faster R package installer) by setting `RENV_CONFIG_PAK_ENABLED=TRUE` as an environment variable. You can then run the following renv command to restore the packages using pak behind the scenes:
-
 ``` r
-renv::restore()
+pak::lockfile_install()
 ```
+
+To update the lockfile, update the command below and rerun. Make sure to update the Dockerfile as appropriate too as that is not yet working from the lockfile.
 
 ``` r
 pak::lockfile_create(
@@ -95,21 +95,10 @@ pak::lockfile_create(
         "AzureStor",
         "purrr",
         "withr",
-        "httr2"#,"dfe-analytical-services/eesyscreener@v0.1.2"
+        "httr2",
+        "dfe-analytical-services/eesyscreener@v0.1.2"
     )
 )
-```
-
-
-If renv isn't already installed, run `install.packages("renv")` first.
-
-If any additional dependencies are added, run `renv::snapshot()` to update the lockfile before commiting changes. To automatically update packages to their latest versions, run `renv::update()`. More details and commands are available in the [renv documentation](https://rstudio.github.io/renv/index.html).
-
-To update the version of the eesyscreener package specifically, getting the latest published version on GitHub, run the following in R:
-
-``` r
-pak::pak("dfe-analytical-services/eesyscreener")
-renv::snapshot()
 ```
 
 ### Azurite
@@ -144,7 +133,11 @@ The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body 
 
 ## Testing
 
-Unit tests have been setup using [testthat](https://testthat.r-lib.org/) and [mirai](https://mirai.r-lib.org/index.html), you can run them locally in R using `testthat::test_dir("tests/testthat")`.
+Unit tests have been setup using [testthat](https://testthat.r-lib.org/) and [mirai](https://mirai.r-lib.org/index.html), you can run them locally in R using:
+
+```
+testthat::test_dir("tests/testthat")
+```
 
 If one of the environment variables isn't set from "STORAGE_URL", "STORAGE_KEY" or "STORAGE_CONTAINER_NAME". Then the API will fallback to looking a local file, for example you can then supply the paths to the example-data in this repo
 

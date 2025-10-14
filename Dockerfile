@@ -22,10 +22,9 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
     libssl-dev
 
 RUN R -e "install.packages('pak');"
-RUN R -e "pak::pak('Rcpp');"
+RUN R -e "pak::pak('plumber@1.3.0');"
+RUN R -e "pak::pak('AzureStor@3.7.1');"
 RUN R -e "pak::pak('dfe-analytical-services/eesyscreener@v0.1.2');"
-COPY pkg.lock pkg.lock
-RUN R -e "pak::lockfile_install();"
 
 WORKDIR /home/site/wwwroot
 COPY / /home/site/wwwroot
