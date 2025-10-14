@@ -33,13 +33,18 @@ jobs:
         shell: Rscript {0}
         run: |
           if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
-          pak::lockfile_create(
+          pak::pak("dfe-analytical-services/eesyscreener@v0.1.2")
+          pak::pak(
             c(
-              "github::dfe-analytical-services/eesyscreener@v0.1.2", "deps::."), 
-              lockfile = "pkg.lock"
+              "plumber",
+              "testthat",
+              "mirai",
+              "AzureStor",
+              "purrr",
+              "withr",
+              "httr2"
             )
           )
-          pak::lockfile_install()
 
       - name: Run tests
         shell: Rscript {0}
