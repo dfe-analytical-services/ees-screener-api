@@ -89,15 +89,8 @@ To update the lockfile, update the command below and rerun. Make sure to update 
 
 ``` r
 pak::lockfile_create(
-    c(
-        "plumber",
-        "testthat",
-        "mirai",
-        "AzureStor",
-        "purrr",
-        "withr",
-        "httr2"
-    )
+   c("deps::.", "github::dfe-analytical-services/eesyscreener@v0.1.2"),
+   lockfile = "pkg.lock"
 )
 ```
 
