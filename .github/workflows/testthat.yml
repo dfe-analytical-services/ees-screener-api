@@ -35,7 +35,7 @@ jobs:
           if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
           pak::lockfile_create(
             c(
-              "github::dfe-analytical-services/eesyscreener@v0.1.2"), "deps::.", 
+              "github::dfe-analytical-services/eesyscreener@v0.1.2", "deps::."), 
               lockfile = "pkg.lock"
             )
           )
