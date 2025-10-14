@@ -33,6 +33,7 @@ jobs:
         shell: Rscript {0}
         run: |
           if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
+          pak::pkg_install("dfe-analytical-services/eesyscreener@v0.1.2")
           if (file.exists("pkg.lock")){
              pak::lockfile_install()
           } else {

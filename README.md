@@ -82,9 +82,10 @@ You will need to restore the R packages from the lockfile to install dependencie
 
 ``` r
 pak::lockfile_install()
+pak::pak("dfe-analytical-services/eesyscreener@v0.1.2")
 ```
 
-To update the lockfile, update the command below and rerun. Make sure to update the Dockerfile as appropriate too as that is not yet working from the lockfile.
+To update the lockfile, update the command below and rerun. Make sure to update the Dockerfile as appropriate too as that are not yet working from the lockfile. `eesyscreener` needs installing separately as it is only available from GitHub currently.
 
 ``` r
 pak::lockfile_create(
@@ -95,8 +96,7 @@ pak::lockfile_create(
         "AzureStor",
         "purrr",
         "withr",
-        "httr2",
-        "dfe-analytical-services/eesyscreener@v0.1.2"
+        "httr2"
     )
 )
 ```
