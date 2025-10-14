@@ -33,11 +33,13 @@ jobs:
         shell: Rscript {0}
         run: |
           if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
-          if (file.exists("pkg.lock")){
-             pak::lockfile_install()
-          } else {
-             warning("No pkg.lock file found")
-          }
+          pak::lockfile_create(
+            c(
+              "deps::.", "github::dfe-analytical-services/eesyscreener@v0.1.2"),
+              lockfile = "pkg.lock"
+            )
+          )
+          pak::lockfile_install()
 
       - name: Run tests
         shell: Rscript {0}
