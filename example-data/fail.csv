@@ -1,0 +1,10 @@
+"time_period","time_identifier","geographic_level","country_code","country_name","sex","education_phase","enrolment_count"
+"201718","parsec","National","E92000001","England","All pupils","All phases",1000
+"201718","parsec","National","E92000001","England","All pupils","Primary",300
+"201718","parsec","National","E92000001","England","All pupils","Secondary",700
+"201718","parsec","National","E92000001","England","Male","All phases",450
+"201718","parsec","National","E92000001","England","Female","All phases",460
+"201718","parsec","National","E92000001","England","Male","Primary",200
+"201718","parsec","National","E92000001","England","Female","Primary",205
+"201718","parsec","National","E92000001","England","Male","Secondary",250
+"201718","parsec","National","E92000001","England","Female","Secondary",255

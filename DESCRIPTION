@@ -1,0 +1,19 @@
+Package: ees-screener-api
+Type: Package
+Title: DfE EES Screener API
+Version: 0.1.0
+Description: Containerised Azure Function App with an R Plumber API for the DfE's data screener.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports:
+    plumber,
+    AzureStor
+Remotes:
+    dfe-analytical-services/eesyscreener@v0.1.2
+Suggests:
+    testthat,
+    mirai,
+    purrr,
+    httr2,
+    withr
