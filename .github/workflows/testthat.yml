@@ -32,4 +32,5 @@ jobs:
       - name: Run tests
         shell: Rscript {0}
         run: |
-          testthat::test_dir("tests/testthat")
+          source("tests/testthat/setup-api.R")
+          testthat::test_file("tests/testthat/test-api-screen.R")

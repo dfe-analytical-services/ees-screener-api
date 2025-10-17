@@ -44,14 +44,20 @@ screen <- function(req, res) {
 
     result <- tryCatch({
         result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name)
-        file.remove(temp_data_path)
-        file.remove(temp_meta_path)
+        if(storage_account_url != "" && storage_account_key != "" && blob_container_name != "") {
+            file.remove(temp_data_path)
+            file.remove(temp_meta_path)
+        }
 
         res$status <- 200
         res$body <- result
     }, warning = function(w) {
         # TODO: Add logging
     }, error = function(e) {
+        if(storage_account_url != "" && storage_account_key != "" && blob_container_name != "") {
+            file.remove(temp_data_path)
+            file.remove(temp_meta_path)
+        }
         print(paste0("Error details: ", e))
         res$status <- 400
         res$body <- paste0("An unhandled exception occurred in eesyscreener: ", e)
