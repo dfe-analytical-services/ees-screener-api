@@ -6,6 +6,7 @@ test_get <- function() {
 }
 
 #* Screen data set files located at the supplied blob storage paths using the eesyscreener package
+#* If the storage account environment variables are not set, local file paths will be assumed instead
 #* @parser json
 #* @serializer unboxedJSON
 #* @post /api/screen
@@ -17,19 +18,35 @@ screen <- function(req, res) {
     storage_account_key <- Sys.getenv("STORAGE_KEY")
     blob_container_name <- Sys.getenv("STORAGE_CONTAINER_NAME")
 
-    endpoint <- blob_endpoint(storage_account_url, key = storage_account_key)
-    container <- blob_container(endpoint, blob_container_name)
-
     data_file_name <- req$body$dataFileName
-    data_file_path <- req$body$dataFilePath
     meta_file_name <- req$body$metaFileName
-    meta_file_path <- req$body$metaFilePath
 
-    data_file <- storage_download(container, src = data_file_path, dest = NULL)
-    meta_file <- storage_download(container, src = meta_file_path, dest = NULL)
+    if (storage_account_url == "" || storage_account_key == "" || blob_container_name == "") {
+        temp_data_path <- req$body$dataFilePath
+        temp_meta_path <- req$body$metaFilePath
+
+        message("Storage account environment variables not set. Using local files: ", temp_data_path, " and ", temp_meta_path)
+    } else {
+        temp_data_path <- paste0(tempdir(), "/", data_file_name)
+        temp_meta_path <- paste0(tempdir(), "/", meta_file_name)
+
+        az_data_file_path <- req$body$dataFilePath
+        az_meta_file_path <- req$body$metaFilePath
+
+        message("Downloading files from Azure Blob Storage: ", az_data_file_path, " and ", az_meta_file_path)
+        
+        endpoint <- blob_endpoint(storage_account_url, key = storage_account_key)
+        container <- blob_container(endpoint, blob_container_name)
+
+        storage_download(container, src = az_data_file_path, dest = temp_data_path)
+        storage_download(container, src = az_meta_file_path, dest = temp_meta_path)
+    }
 
     result <- tryCatch({
-        result <- screen_files(data_file, meta_file, data_file_name, meta_file_name)
+        result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name)
+        file.remove(temp_data_path)
+        file.remove(temp_meta_path)
+
         res$status <- 200
         res$body <- result
     }, warning = function(w) {
