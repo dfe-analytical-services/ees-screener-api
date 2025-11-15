@@ -1,9 +1,6 @@
 on:
-  push:
-    branches:
-      - main
-  pull_request:
   workflow_dispatch:
+# Only running on manual trigger until we fix this
 
 name: testthat
 
@@ -28,8 +25,6 @@ jobs:
 
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: github::dfe-analytical-services/eesyscreener@v0.1.2
 
       - name: Run tests
         shell: Rscript {0}

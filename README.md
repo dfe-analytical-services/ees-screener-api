@@ -78,23 +78,20 @@ http://localhost:7071/api/screen
 
 ### Packages
 
-You will need to install the R packages to run the API locally in R, update the command below and rerun. Make sure to update the Dockerfile and GitHub action as appropriate too as they are not yet working from a lockfile. `eesyscreener` needs installing separately as it is only available from GitHub currently.
+You will need to install the R packages to run the API locally in R, update the command below and rerun. 
 
+The dockerfile and GitHub action automatically pick up the dependencies from the lockfile, which in turn picks up dependencies from the DESCRIPTION.
+
+To install the dependencies in a local R session run:
 ``` r
-pak::pak("dfe-analytical-services/eesyscreener@v0.1.2")
+pak::lockfile_install()
+```
 
-pak::pak(
-  c(
-    "plumber",
-    "AzureStor",
-    # below for testing only
-    "testthat",
-    "mirai",
-    "purrr",
-    "withr",
-    "httr2"
-  )
-)
+In the GitHub action, the depdendencies are automatically detected in the install R depdencies step, whereas in the Dockerfile we do a specific call to `pak::lockfile()` install to install them.
+
+To add or update dependencies, edit the DESCRIPTION file and then run the following to update the lockfile
+``` r
+pak::lockfile_create()
 ```
 
 ### Azurite
@@ -129,7 +126,7 @@ The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body 
 
 ## Testing
 
-Unit tests have been setup using [testthat](https://testthat.r-lib.org/) and [mirai](https://mirai.r-lib.org/index.html), you can run them locally in R using:
+Unit tests have been setup using [testthat](https://testthat.r-lib.org/) and [mirai](https://mirai.r-lib.org/index.html). They are not yet running reliably in GitHub actions (likely due to the need to do a parralel background process) but you can run them locally in R using:
 
 ```
 testthat::test_dir("tests/testthat")
