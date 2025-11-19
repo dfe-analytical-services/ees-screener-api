@@ -125,7 +125,7 @@ The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body 
 
 > ℹ️ Path format is `<releaseVersionId>/data/<fileId>`.
 
-> ℹ️ Example files can be found in the "example-data" folder.
+> ℹ️ Example files can be found in the "example-data" folder. When running locally, these can be provided to `dateFilePath` and `metaFilePath` as relative paths within the local repo, e.g. `"dataFilePath": "example-data/pass.csv"`.
 
 ## Testing
 
