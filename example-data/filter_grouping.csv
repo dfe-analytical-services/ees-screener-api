@@ -1,4 +1,4 @@
-time_period,time_identifier,geographic_level,country_code,country_name,old_la_code,new_la_code,la_name,qualification_level,subject_area,course_title,enrollment_count
+time_period,time_identifier,geographic_level,country_code,country_name,old_la_code,new_la_code,la_name,qualification_level,subject_area,course_title,enrolment_count
 2018,Calendar year,Local authority,E92000001,England,370,E08000016,Barnsley,Total,Total,Total,777777
 2018,Calendar year,Local authority,E92000001,England,330,E08000025,Birmingham,Total,Total,Total,777787
 2018,Calendar year,Local authority,E92000001,England,370,E08000016,Barnsley,Higher,Total,Total,6544
