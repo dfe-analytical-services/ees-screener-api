@@ -29,7 +29,11 @@ jobs:
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: github::dfe-analytical-services/eesyscreener@v0.1.2
+          extra-packages: 
+            github::dfe-analytical-services/eesyscreener@v0.1.2
+            mirai
+            purrr
+            httr2
 
       - name: Run tests
         shell: Rscript {0}
