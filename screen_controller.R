@@ -18,10 +18,16 @@ screen <- function(req, res) {
   storage_account_key <- Sys.getenv("STORAGE_KEY")
   blob_container_name <- Sys.getenv("STORAGE_CONTAINER_NAME")
 
+  use_local_storage <- all(
+    storage_account_url == "",
+    storage_account_key == "",
+    blob_container_name == ""
+  )
+
   data_file_name <- req$body$dataFileName
   meta_file_name <- req$body$metaFileName
 
-  if (storage_account_url == "" || storage_account_key == "" || blob_container_name == "") {
+  if (use_local_storage) {
     temp_data_path <- req$body$dataFilePath
     temp_meta_path <- req$body$metaFilePath
 
@@ -55,13 +61,7 @@ screen <- function(req, res) {
     result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name)
 
     # Remove test files if sourcing from blob storage (and not if sourcing from local directory)
-    if (
-      all(
-        storage_account_url != "",
-        storage_account_key != "",
-        blob_container_name != ""
-      )
-    ) {
+    if (!use_local_storage) {
       file.remove(temp_data_path)
       file.remove(temp_meta_path)
     }
