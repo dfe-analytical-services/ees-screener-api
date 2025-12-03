@@ -5,6 +5,10 @@ test_get <- function() {
   list("Success")
 }
 
+
+# Disable automatic content decoding for AzureStor
+options(azure_storage_disable_content_encoding = TRUE)
+
 #* Screen data set files located at the supplied blob storage paths using the eesyscreener package
 #* If the storage account environment variables are not set, local file paths will be assumed instead
 #* @parser json
@@ -53,8 +57,8 @@ screen <- function(req, res) {
     endpoint <- blob_endpoint(storage_account_url, key = storage_account_key)
     container <- blob_container(endpoint, blob_container_name)
 
-    storage_download(container, src = az_data_file_path, dest = temp_data_path)
-    storage_download(container, src = az_meta_file_path, dest = temp_meta_path)
+    storage_download(container, src = az_data_file_path, dest = temp_data_path, `Accept-Encoding` = gzip)
+    storage_download(container, src = az_meta_file_path, dest = temp_meta_path, `Accept-Encoding` = gzip)
   }
 
   result <- tryCatch({
