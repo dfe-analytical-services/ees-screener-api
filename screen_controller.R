@@ -57,8 +57,8 @@ screen <- function(req, res) {
     endpoint <- blob_endpoint(storage_account_url, key = storage_account_key)
     container <- blob_container(endpoint, blob_container_name)
 
-    storage_download(container, src = az_data_file_path, dest = temp_data_path, `Accept-Encoding` = gzip)
-    storage_download(container, src = az_meta_file_path, dest = temp_meta_path, `Accept-Encoding` = gzip)
+    storage_download(container, src = az_data_file_path, dest = temp_data_path)
+    storage_download(container, src = az_meta_file_path, dest = temp_meta_path)
   }
 
   result <- tryCatch({
