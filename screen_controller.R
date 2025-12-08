@@ -34,7 +34,8 @@ screen <- function(req, res) {
     message(
       "Storage account environment variables not set. Using local files: ",
       temp_data_path,
-      " and ", temp_meta_path
+      " and ",
+      temp_meta_path
     )
   } else {
     temp_data_path <- paste0(tempdir(), "/", data_file_name)
@@ -52,28 +53,52 @@ screen <- function(req, res) {
 
     endpoint <- blob_endpoint(storage_account_url, key = storage_account_key)
     container <- blob_container(endpoint, blob_container_name)
-
-    storage_download(container, src = az_data_file_path, dest = temp_data_path)
-    storage_download(container, src = az_meta_file_path, dest = temp_meta_path)
+    result <- tryCatch(
+      {
+        storage_download(
+          container,
+          src = az_data_file_path,
+          dest = temp_data_path
+        )
+        storage_download(
+          container,
+          src = az_meta_file_path,
+          dest = temp_meta_path
+        )
+      },
+      error = function(e) {
+        res$status <- 400
+        res$body <- paste0("Data failed to transfer from blob storage: ", e)
+      }
+    )
   }
 
-  result <- tryCatch({
-    result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name)
+  result <- tryCatch(
+    {
+      result <- screen_csv(
+        temp_data_path,
+        temp_meta_path,
+        data_file_name,
+        meta_file_name
+      )
 
-    # Remove test files if sourcing from blob storage (and not if sourcing from local directory)
-    if (!use_local_storage) {
-      file.remove(temp_data_path)
-      file.remove(temp_meta_path)
+      # Remove test files if sourcing from blob storage (and not if sourcing from local directory)
+      if (!use_local_storage) {
+        file.remove(temp_data_path)
+        file.remove(temp_meta_path)
+      }
+
+      res$status <- 200
+      res$body <- result
+    },
+    error = function(e) {
+      print(paste0("Error details: ", e))
+      res$status <- 400
+      res$body <- paste0("An unhandled exception occurred in eesyscreener: ", e)
+      # TODO: Add logging
+    },
+    finally = {
+      # Intentionally blank
     }
-      
-    res$status <- 200
-    res$body <- result
-  }, error = function(e) {
-    print(paste0("Error details: ", e))
-    res$status <- 400
-    res$body <- paste0("An unhandled exception occurred in eesyscreener: ", e)
-    # TODO: Add logging
-  }, finally = {
-    # Intentionally blank
-  })
+  )
 }
