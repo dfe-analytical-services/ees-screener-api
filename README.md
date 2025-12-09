@@ -80,13 +80,12 @@ http://localhost:7071/api/screen
 
 You will need to install the R packages to run the API locally in R, update the command below and rerun. Make sure to update the Dockerfile and GitHub action as appropriate too as they are not yet working from a lockfile. `eesyscreener` needs installing separately as it is only available from GitHub currently.
 
-``` r
-pak::pak("dfe-analytical-services/eesyscreener@v0.1.2")
+```r
+pak::pak("dfe-analytical-services/eesyscreener@v0.1.3")
 
 pak::pak(
   c(
     "plumber",
-    "AzureStor",
     # below for testing only
     "testthat",
     "mirai",
@@ -114,12 +113,12 @@ The `GET` endpoint is just a health check to confirm the API is running, and exp
 
 The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body in the following format:
 
-``` json
+```json
 {
-    "dataFileName": "data.csv",
-    "dataFilePath": "00ffd291-2ff2-4b65-46c5-08dd9ec03382/data/0d5a5bc6-b12c-4ed4-986e-517679b49f88",
-    "metaFileName": "meta.data.csv",
-    "metaFilePath:": "00ffd291-2ff2-4b65-46c5-08dd9ec03382/data/f9c951bc-85a0-48ab-a0be-8eab3fc8dcee"
+  "dataFileName": "data.csv",
+  "dataFilePath": "00ffd291-2ff2-4b65-46c5-08dd9ec03382/data/0d5a5bc6-b12c-4ed4-986e-517679b49f88",
+  "metaFileName": "meta.data.csv",
+  "metaFilePath:": "00ffd291-2ff2-4b65-46c5-08dd9ec03382/data/f9c951bc-85a0-48ab-a0be-8eab3fc8dcee"
 }
 ```
 
@@ -137,53 +136,54 @@ testthat::test_dir("tests/testthat")
 
 If one of the environment variables isn't set from "STORAGE_URL", "STORAGE_KEY" or "STORAGE_CONTAINER_NAME". Then the API will fallback to looking a local file, for example you can then supply the paths to the example-data in this repo
 
-``` json
+```json
 {
-    "dataFileName": "pass.csv",
-    "dataFilePath": "example-data/pass.csv",
-    "metaFileName": "pass.data.csv",
-    "metaFilePath:": "example-data/pass.meta.csv"
+  "dataFileName": "pass.csv",
+  "dataFilePath": "example-data/pass.csv",
+  "metaFileName": "pass.data.csv",
+  "metaFilePath:": "example-data/pass.meta.csv"
 }
 ```
 
 Those files should pass reliably, if not, regenerate them using the following lines in R:
 
-``` r
+```r
 write.csv(eesyscreener::example_data, "example-data/pass.csv", row.names = FALSE)
 write.csv(eesyscreener::example_meta, "example-data/pass.meta.csv", row.names = FALSE)
 ```
 
 For other test files that are available, review the eesyscreener docs and adapt the code above accordingly. For an example failure from the API locally use the fail.csv files:
 
-``` r
+```r
 write.csv(
-    eesyscreener::example_data |> 
-        dplyr::mutate(time_identifier = "parsec"), 
-    "example-data/fail.csv", 
+    eesyscreener::example_data |>
+        dplyr::mutate(time_identifier = "parsec"),
+    "example-data/fail.csv",
     row.names = FALSE
 )
 write.csv(eesyscreener::example_meta, "example-data/fail.meta.csv", row.names = FALSE)
 ```
 
 request body
-``` json
+
+```json
 {
-    "dataFileName": "fail.csv",
-    "dataFilePath": "example-data/fail.csv",
-    "metaFileName": "fail.meta.csv",
-    "metaFilePath:": "example-data/fail.meta.csv"
+  "dataFileName": "fail.csv",
+  "dataFilePath": "example-data/fail.csv",
+  "metaFileName": "fail.meta.csv",
+  "metaFilePath:": "example-data/fail.meta.csv"
 }
 ```
 
 If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_controller.R`:
 
-``` r
+```r
 result <- eesyscreener::screen_csv(data_file, meta_file, data_file_name, meta_file_name)
 ```
 
 with
 
-``` r
+```r
 write.csv(eesyscreener::example_data, "example_data.csv", row.names = FALSE)
 write.csv(eesyscreener::example_meta, "example_data.meta.csv", row.names = FALSE)
 result <- eesyscreener::screen_csv("example_data.csv", "example_data.meta.csv")
