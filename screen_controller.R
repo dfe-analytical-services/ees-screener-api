@@ -12,24 +12,26 @@ test_get <- function() {
 #* @post /api/screen
 screen <- function(req, res) {
   library(eesyscreener)
-  library(AzureStor)
+  library(curl)
 
   storage_account_url <- Sys.getenv("STORAGE_URL")
-  storage_account_key <- Sys.getenv("STORAGE_KEY")
   blob_container_name <- Sys.getenv("STORAGE_CONTAINER_NAME")
 
   use_local_storage <- all(
     storage_account_url == "",
-    storage_account_key == "",
     blob_container_name == ""
   )
 
+  data_file_path <- req$body$dataFilePath
   data_file_name <- req$body$dataFileName
+  data_file_sas_token <- req$body$dataFileSasToken
+  meta_file_path <- req$body$metaFilePath
   meta_file_name <- req$body$metaFileName
+  meta_file_sas_token <- req$body$metaFileSasToken
 
   if (use_local_storage) {
-    temp_data_path <- req$body$dataFilePath
-    temp_meta_path <- req$body$metaFilePath
+    temp_data_path <- data_file_path
+    temp_meta_path <- meta_file_path
 
     message(
       "Storage account environment variables not set. Using local files: ",
@@ -40,21 +42,22 @@ screen <- function(req, res) {
     temp_data_path <- paste0(tempdir(), "/", data_file_name)
     temp_meta_path <- paste0(tempdir(), "/", meta_file_name)
 
-    az_data_file_path <- req$body$dataFilePath
-    az_meta_file_path <- req$body$metaFilePath
+    data_file_url_with_token <- paste0(storage_account_url, "/", blob_container_name, "/", data_file_path, "?", data_file_sas_token)
+    meta_file_url_with_token <- paste0(storage_account_url, "/", blob_container_name, "/", meta_file_path, "?", meta_file_sas_token)
 
     message(
       "Downloading files from Azure Blob Storage: ",
-      az_data_file_path,
+      data_file_path,
       " and ",
-      az_meta_file_path
+      meta_file_path,
+      " via URL with SAS token "
     )
 
-    endpoint <- blob_endpoint(storage_account_url, key = storage_account_key)
-    container <- blob_container(endpoint, blob_container_name)
+    h <- new_handle()
+    handle_setheaders(h, "Accept-Encoding" = "gzip, zstd")
 
-    storage_download(container, src = az_data_file_path, dest = temp_data_path)
-    storage_download(container, src = az_meta_file_path, dest = temp_meta_path)
+    curl_download(url = data_file_url_with_token, destfile = temp_data_path, handle = h)
+    curl_download(url = meta_file_url_with_token, destfile = temp_meta_path, handle = h)
   }
 
   result <- tryCatch({
@@ -65,7 +68,7 @@ screen <- function(req, res) {
       file.remove(temp_data_path)
       file.remove(temp_meta_path)
     }
-      
+
     res$status <- 200
     res$body <- result
   }, error = function(e) {
