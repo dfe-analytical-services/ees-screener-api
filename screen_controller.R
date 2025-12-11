@@ -53,11 +53,20 @@ screen <- function(req, res) {
       " via URL with SAS token "
     )
 
+    result <- tryCatch(
+      {
     h <- new_handle()
     handle_setheaders(h, "Accept-Encoding" = "gzip, zstd")
 
     curl_download(url = data_file_url_with_token, destfile = temp_data_path, handle = h)
     curl_download(url = meta_file_url_with_token, destfile = temp_meta_path, handle = h)
+      },
+      error = function(e) {
+        res$status <- 400
+        res$body <- paste0("Data failed to transfer from blob storage: ", e)
+      }
+    )
+
   }
 
   result <- tryCatch({
