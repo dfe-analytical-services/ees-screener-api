@@ -55,14 +55,14 @@ screen <- function(req, res) {
     )
 
     curl_download(url = data_file_url_with_token, destfile = temp_data_path, handle = h)
-    
-    curl_download(url = meta_file_url_with_token, destfile = temp_meta_path, handle = h)
 
     message(
       "Downloading metadata file from Azure Blob Storage: ",
       meta_file_path,
       " via URL with SAS token "
     )
+    
+    curl_download(url = meta_file_url_with_token, destfile = temp_meta_path, handle = h)
   }
 
   result <- tryCatch({
