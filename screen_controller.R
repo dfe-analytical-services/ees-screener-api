@@ -45,23 +45,33 @@ screen <- function(req, res) {
     data_file_url_with_token <- paste0(storage_account_url, "/", blob_container_name, "/", data_file_path, "?", data_file_sas_token)
     meta_file_url_with_token <- paste0(storage_account_url, "/", blob_container_name, "/", meta_file_path, "?", meta_file_sas_token)
 
-    message(
-      "Downloading files from Azure Blob Storage: ",
-      data_file_path,
-      " and ",
-      meta_file_path,
-      " via URL with SAS token "
-    )
-
     h <- new_handle()
     handle_setheaders(h, "Accept-Encoding" = "gzip, zstd")
 
+    message(
+      "Downloading data file from Azure Blob Storage: ",
+      data_file_path,
+      " via URL with SAS token "
+    )
+
     curl_download(url = data_file_url_with_token, destfile = temp_data_path, handle = h)
+
+    message(
+      "Downloading metadata file from Azure Blob Storage: ",
+      meta_file_path,
+      " via URL with SAS token "
+    )
+    
     curl_download(url = meta_file_url_with_token, destfile = temp_meta_path, handle = h)
   }
 
   result <- tryCatch({
+
+    message("Calling eesyscreener to screen downloaded files...")
+
     result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name)
+
+    message("eesyscreener screened files successfully!")
 
     # Remove test files if sourcing from blob storage (and not if sourcing from local directory)
     if (!use_local_storage) {

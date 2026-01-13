@@ -81,7 +81,7 @@ http://localhost:7071/api/screen
 You will need to install the R packages to run the API locally in R, update the command below and rerun. Make sure to update the Dockerfile and GitHub action as appropriate too as they are not yet working from a lockfile. `eesyscreener` needs installing separately as it is only available from GitHub currently.
 
 ```r
-pak::pak("dfe-analytical-services/eesyscreener@v0.1.4")
+pak::pak("dfe-analytical-services/eesyscreener@v0.1.5")
 
 pak::pak(
   c(
