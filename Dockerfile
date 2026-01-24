@@ -4,7 +4,7 @@ ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
     R_VERSION=4.5.2
 
-# Install system dependencies and tools
+# Install system dependencies and tools - https://packagemanager.posit.co/client/#/repos/cran/setup
 RUN apt-get update && apt-get -y install --no-install-recommends \
     wget \
     gdebi-core \
@@ -28,13 +28,10 @@ RUN wget https://cdn.posit.co/r/debian-12/pkgs/r-${R_VERSION}_1_$(dpkg --print-a
     ln -s /opt/R/${R_VERSION}/bin/R /usr/bin/R && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/bin/Rscript
 
-# Install R packages using binaries
-RUN R -e "install.packages(c('plumber', 'desc', 'pak'), repos = 'https://packagemanager.posit.co/cran/__linux__/bookworm/latest'); \
-           desc_local <- tempfile(fileext = '.DESCRIPTION'); \
-           download.file('https://raw.githubusercontent.com/dfe-analytical-services/eesyscreener/main/DESCRIPTION', desc_local, quiet = TRUE); \
-           deps <- desc::desc_get_deps(file = desc_local); \
-           install.packages(deps[deps[['type']] == 'Imports', 'package'], repos = 'https://packagemanager.posit.co/cran/__linux__/bookworm/latest'); \
-           pak::pak('dfe-analytical-services/eesyscreener@v0.1.5');"
+# Install R packages using pre-complied binaries for Debian 12 (Bookworm)
+RUN R -e "options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/latest')); \
+           install.packages('pak'); \
+           pak::pak(c('plumber@1.3.0', 'dfe-analytical-services/eesyscreener@v0.1.5'));"
 
 WORKDIR /home/site/wwwroot
 COPY / /home/site/wwwroot
