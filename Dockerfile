@@ -31,7 +31,7 @@ RUN wget https://cdn.posit.co/r/debian-12/pkgs/r-${R_VERSION}_1_$(dpkg --print-a
 # Install R packages using pre-complied binaries for Debian 12 (Bookworm)
 RUN R -e "options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/latest')); \
            install.packages('pak'); \
-           pak::pak(c('plumber@1.3.0', 'dfe-analytical-services/eesyscreener@v0.1.5'));"
+           pak::pak(c('plumber@1.3.0', 'dfe-analytical-services/eesyscreener@v0.2.0'));"
 
 WORKDIR /home/site/wwwroot
 COPY / /home/site/wwwroot
