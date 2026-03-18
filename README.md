@@ -54,7 +54,7 @@ docker run --rm \
   data-screener
 ```
 
-and call the Azure Function endpoint at http://localhost:7078/api/screen.
+and call the Azure Function endpoint at http://localhost:7078/api/healthcheck.
 
 The environment variables are necessary because when run using the `mcr.microsoft.com/azure-functions` base Docker image,
 `local.settings.json` is not used.

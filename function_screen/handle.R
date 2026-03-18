@@ -1,6 +1,6 @@
 #* Screen data set files located at the supplied blob storage paths using the eesyscreener package
 #* If the storage account environment variables are not set, local file paths will be assumed instead
-screen <- function(req, res) {
+handle_screen <- function(req, res) {
   
   source("services/screen_csvs.R")
   

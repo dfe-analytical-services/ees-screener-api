@@ -1,4 +1,4 @@
-start_screening <- function(req, res) {
+handle_start_screening <- function(req, res) {
 
   source("utils/queue_triggers.R")
   source("services/screen_csvs.R")

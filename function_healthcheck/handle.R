@@ -1,4 +1,4 @@
 #* Test the service is running
-healthcheck <- function() {
+handle_healthcheck <- function() {
   list("Success")
 }
