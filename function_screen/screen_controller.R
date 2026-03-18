@@ -1,15 +1,5 @@
-#* Test the service is running
-#* @serializer unboxedJSON
-#* @get /api/screen
-test_get <- function() {
-  list("Success")
-}
-
 #* Screen data set files located at the supplied blob storage paths using the eesyscreener package
 #* If the storage account environment variables are not set, local file paths will be assumed instead
-#* @parser json
-#* @serializer unboxedJSON
-#* @post /api/screen
 screen <- function(req, res) {
   library(eesyscreener)
   library(curl)

@@ -45,10 +45,19 @@ docker build -t data-screener .
 then run it using
 
 ```
-docker run --rm --name data-screener --network explore-education-statistics_default -p 7078:80 data-screener
+docker run --rm \
+  --name data-screener \
+  --network explore-education-statistics_default \
+  -p 7078:80 \
+  -e "AzureWebJobsStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://data-storage:10000/devstoreaccount1;QueueEndpoint=http://data-storage:10001/devstoreaccount1;" \
+  -e "FUNCTIONS_WORKER_RUNTIME=custom" \
+  data-screener
 ```
 
-and call the Azure Function endpoint at http://localhost/api/screen.
+and call the Azure Function endpoint at http://localhost:7078/api/screen.
+
+The environment variables are necessary because when run using the `mcr.microsoft.com/azure-functions` base Docker image,
+`local.settings.json` is not used.
 
 > ℹ️ The `--network` parameter used here assumes you are using the storage container configured by the main EES project (see [Dependencies > Azurite](#azurite) for details on how to construct API requests for further details).
 

@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "name": "startScreening",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "start-screening",
+      "connection": "Storage",
+    }
+  ]
+}
