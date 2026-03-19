@@ -96,7 +96,7 @@ pak::pak(
 )
 ```
 
-#### Alternative pacakge management
+#### Alternative package management
 
 Note on pkg.lock file. This was added as part of development, but is not currently used in workflows.
 
