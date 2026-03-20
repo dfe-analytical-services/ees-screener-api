@@ -1,7 +1,7 @@
 {
   "lockfile_version": 1,
   "os": "Windows 11 x64 (build 22631)",
-  "r_version": "R version 4.5.2 (2025-10-31 ucrt)",
+  "r_version": "R version 4.5.3 (2026-03-11 ucrt)",
   "platform": "x86_64-w64-mingw32",
   "packages": [
     {
@@ -689,9 +689,9 @@
       "sysreqs": ""
     },
     {
-      "ref": "dfe-analytical-services/eesyscreener@v0.2.1",
+      "ref": "dfe-analytical-services/eesyscreener@v0.2.2",
       "package": "eesyscreener",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "type": "github",
       "direct": true,
       "binary": false,
@@ -703,16 +703,16 @@
         "RemoteHost": "api.github.com",
         "RemoteRepo": "eesyscreener",
         "RemoteUsername": "dfe-analytical-services",
-        "RemotePkgRef": "dfe-analytical-services/eesyscreener@v0.2.1",
-        "RemoteRef": "v0.2.1",
-        "RemoteSha": "18297bf7024968fdfa1f8e6565dd8294f12e060c",
+        "RemotePkgRef": "dfe-analytical-services/eesyscreener@v0.2.2",
+        "RemoteRef": "v0.2.2",
+        "RemoteSha": "5bc170e0122f5b37e53508b12ba9c58531394922",
         "GithubRepo": "eesyscreener",
         "GithubUsername": "dfe-analytical-services",
-        "GithubRef": "v0.2.1",
-        "GithubSHA1": "18297bf7024968fdfa1f8e6565dd8294f12e060c"
+        "GithubRef": "v0.2.2",
+        "GithubSHA1": "5bc170e0122f5b37e53508b12ba9c58531394922"
       },
-      "sources": ["https://api.github.com/repos/dfe-analytical-services/eesyscreener/zipball/18297bf7024968fdfa1f8e6565dd8294f12e060c"],
-      "target": "src/contrib/eesyscreener_0.1.2_18297bf.tar.gz",
+      "sources": ["https://api.github.com/repos/dfe-analytical-services/eesyscreener/zipball/5bc170e0122f5b37e53508b12ba9c58531394922"],
+      "target": "src/contrib/eesyscreener_0.2.2_5bc170e.tar.gz",
       "platform": "source",
       "rversion": "*",
       "directpkg": true,
@@ -857,7 +857,7 @@
     {
       "ref": "duckdb",
       "package": "duckdb",
-      "version": "1.4.4",
+      "version": "1.5.0",
       "type": "standard",
       "direct": false,
       "binary": true,
@@ -870,17 +870,17 @@
         "RemoteRef": "duckdb",
         "RemoteRepos": "https://cran.rstudio.com/",
         "RemotePkgPlatform": "x86_64-w64-mingw32",
-        "RemoteSha": "1.4.4"
+        "RemoteSha": "1.5.0"
       },
-      "sources": ["https://cran.rstudio.com//bin/windows/contrib/4.5/duckdb_1.4.4.zip"],
-      "target": "bin/windows/contrib/4.5/duckdb_1.4.4.zip",
+      "sources": ["https://cran.rstudio.com//bin/windows/contrib/4.5/duckdb_1.5.0.zip"],
+      "target": "bin/windows/contrib/4.5/duckdb_1.5.0.zip",
       "platform": "x86_64-w64-mingw32",
       "rversion": "4.5",
-      "built": "R 4.5.2; x86_64-w64-mingw32; 2026-02-01 00:52:58 UTC; windows",
+      "built": "R 4.5.3; x86_64-w64-mingw32; 2026-03-18 00:52:45 UTC; windows",
       "directpkg": false,
       "license": "MIT + file LICENSE",
-      "sha256": "0a3f127d5d711edb881e3e7b8cc5f504e0dc744095eb3d64e54496c9da93a3e6",
-      "filesize": 14443019,
+      "sha256": "ae4fffe0f842f322ee90eeca6e45fc942197bdcbab19c4193464ffb69cf9bfda",
+      "filesize": 15197410,
       "dep_types": ["Depends", "Imports", "LinkingTo"],
       "params": [],
       "install_args": "",

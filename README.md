@@ -81,7 +81,7 @@ http://localhost:7071/api/screen
 You will need to install the R packages to run the API locally in R, update the command below and rerun. Make sure to update the Dockerfile and GitHub action as appropriate too as they are not yet working from a lockfile. `eesyscreener` needs installing separately as it is only available from GitHub currently.
 
 ```r
-pak::pak("dfe-analytical-services/eesyscreener@v0.2.1")
+pak::pak("dfe-analytical-services/eesyscreener@v0.2.2")
 
 pak::pak(
   c(
@@ -96,14 +96,14 @@ pak::pak(
 )
 ```
 
-#### Alternative pacakge management
+#### Alternative package management
 
 Note on pkg.lock file. This was added as part of development, but is not currently used in workflows.
 
 To update it with the latest versions, you can use the following (updating the eesyscreener version number as needed):
 
 ```
-pak::lockfile_create(pkg = c("dfe-analytical-services/eesyscreener@v0.2.1","deps::."))
+pak::lockfile_create(pkg = c("dfe-analytical-services/eesyscreener@v0.2.2","deps::."))
 ```
 
 Restoring packages based on this lockfile, should then be doable using:
