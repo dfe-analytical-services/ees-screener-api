@@ -1,12 +1,10 @@
 handle_start_screening <- function(req, res) {
 
-  source("utils/queue_triggers.R")
-  source("services/screen_csvs.R")
+  source(here::here("utils/queue_triggers.R"))
+  source(here::here("services/screen_csvs.R"))
 
   payload <- get_queue_message_payload(req)
   
-  message(payload)
-
   data_set_id <- payload$dataSetId
 
   message("Starting to screen data set: ", data_set_id, "\n")
@@ -34,10 +32,4 @@ handle_start_screening <- function(req, res) {
   }, finally = {
     # Intentionally blank
   })
-  
-  list(
-    status = 200,
-    headers = list("Content-Type" = "application/json"),
-    body = list(message = paste0("Screening complete for dataSetId ", data_set_id))
-  )
 }

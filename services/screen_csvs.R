@@ -68,4 +68,6 @@ screen_csvs <- function(
     file.remove(temp_data_path)
     file.remove(temp_meta_path)
   }
+
+  return(result)
 }

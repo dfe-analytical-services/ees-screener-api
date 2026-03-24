@@ -9,26 +9,27 @@ See [Request format](#request-format) for details on how to construct API reques
 ### If you have R set up already
 
 1. `pak::lockfile_install()` - install dependencies
-2. `source("server.R")` - set API running
-3. The API endpoint will then be live at `http://localhost:8000/api/screen`
+2. `source("run.R")` - set API running
+3. The API endpoint will then be live at `http://localhost:8000/api/healthcheck`
 
 ### Setup from scratch in VS Code
 
 1. Download R binary (https://www.stats.bris.ac.uk/R/)
 2. Download the [R Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=REditorSupport.r), you may be prompted to download the `languageservice` to use R code locally. Alternatively you can use an R-specific IDE such as [RStudio](https://posit.co/download/rstudio-desktop/)
-3. Open `server.R` click the Run button at the top of the file. Alternatively, open an R Terminal and use the command `source("server.R")`
+3. Open `run.R` click the Run button at the top of the file. Alternatively, open an R Terminal and use the command `source("run.R")`
 4. Open up Postman/PowerShell/curl etc. to hit the endpoints:
 
 ```
-GET localhost:8000/api/screen
+GET localhost:8000/api/healthcheck
 POST localhost:8000/api/screen
+POST localhost:8000/function_start_screening
 ```
 
 ### Running locally from the CLI
 
 1. Ensure that Rscript is executable (check with `Rscript --version`).
-2. Run: `Rscript server.R`
-3. Call an endpoint at `http://localhost:8000/api/screen`.
+2. Run: `Rscript run.R`
+3. Call an endpoint at `http://localhost:8000/api/healthcheck`.
 
 ## Running the R services via the Azure Functions runtime
 
@@ -49,6 +50,8 @@ docker run --rm \
   --name data-screener \
   --network explore-education-statistics_default \
   -p 7078:80 \
+  -e "STORAGE_URL=http://data-storage:10000/devstoreaccount1" \
+  -e "STORAGE_CONTAINER_NAME=releases-temp" \
   -e "AzureWebJobs_StartScreening=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://data-storage:10000/devstoreaccount1;QueueEndpoint=http://data-storage:10001/devstoreaccount1;" \
   -e "FUNCTIONS_WORKER_RUNTIME=custom" \
   data-screener
@@ -80,7 +83,7 @@ func start
 and the API can be called via the Azure Functions runtime by calling:
 
 ```
-http://localhost:7071/api/screen
+http://localhost:7071/api/healthcheck
 ```
 
 ## Dependencies
@@ -98,7 +101,6 @@ pak::pak(
     # below for testing only
     "testthat",
     "mirai",
-    "purrr",
     "withr",
     "httr2"
   )
@@ -123,7 +125,7 @@ pak::lockfile_install()
 
 ### Azurite
 
-The screener's `POST` endpoint retrieves files from a local blob storage container based on the paths supplied in the request body. The connection details hard-coded into [screen_Controller.R](./screen_Controller.R) relate to the same storage container used by the main EES solution. This container can be started up by opening a terminal in the main project directory and running the start script, e.g.:
+The screener's `POST` endpoint retrieves files from a local blob storage container based on the paths supplied in the request body. The connection details hard-coded into [screen_csvs.R](./services/screen_csvs.R) relate to the same storage container used by the main EES solution. This container can be started up by opening a terminal in the main project directory and running the start script, e.g.:
 
 ```
 cd source/repos/dfe-analytical-services/explore-education-statistics
@@ -134,9 +136,9 @@ If using a different storage container, the connection details can be changed by
 
 ## Request format
 
-The `GET` endpoint is just a health check to confirm the API is running, and expects no parameters: `GET <url>/api/screen`.
+The `GET` endpoint is just a health check to confirm the API is running, and expects no parameters: `GET <url>/api/healthcheck`.
 
-The `POST` endpoint uses the same URL as `GET`, and expects a JSON request body in the following format:
+The `POST` endpoint at `POST <url>/api/screen` expects a JSON request body in the following format:
 
 ```json
 {

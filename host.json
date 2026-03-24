@@ -16,13 +16,13 @@
     "description": {
       "defaultExecutablePath": "Rscript",
       "workingDirectory": "",
-      "arguments": ["server.R"]
+      "arguments": ["run.R"]
     },
     "enableForwardingHttpRequest": true
   },
   "extensions": {
     "queues": {
-      "maxPollingInterval": "00:00:02",
+      "maxPollingInterval": "00:00:02"
     }
   }
 }

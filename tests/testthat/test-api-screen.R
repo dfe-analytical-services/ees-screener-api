@@ -1,17 +1,4 @@
-testthat::test_that("gets the success message", {
-  request <- api_url(api_host(), api_port()) |>
-    httr2::request() |>
-    httr2::req_url_path("api/screen") |>
-    httr2::req_method("GET")
-
-  result <- request |>
-    httr2::req_perform() |>
-    httr2::resp_body_json()
-
-  expect_equal(result[[1]], "Success")
-})
-
-testthat::test_that("POST returns success and expected structure for valid local files", {
+testthat::test_that("POST to the HTTP-triggered screen function returns success and expected structure for valid local files", {
   body <- list(
     dataFileName = "pass.csv",
     dataFilePath = "example-data/pass.csv",
@@ -41,7 +28,7 @@ testthat::test_that("POST returns success and expected structure for valid local
   )
 })
 
-testthat::test_that("POST returns error for missing files", {
+testthat::test_that("POST to the HTTP-triggered screen function returns error for missing files", {
   body <- list(
     dataFileName = "missing.csv",
     dataFilePath = "example-data/missing.csv",
