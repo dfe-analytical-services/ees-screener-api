@@ -19,5 +19,10 @@
       "arguments": ["server.R"]
     },
     "enableForwardingHttpRequest": true
+  },
+  "extensions": {
+    "queues": {
+      "maxPollingInterval": "00:00:02",
+    }
   }
 }

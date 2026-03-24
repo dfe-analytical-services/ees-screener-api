@@ -2,7 +2,8 @@ FROM mcr.microsoft.com/azure-functions/dotnet:4-dotnet8.0
 
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
-    R_VERSION=4.5.2
+    R_VERSION=4.5.2 \
+    LOG_DIR=/tmp
 
 # Install system dependencies and tools - https://packagemanager.posit.co/client/#/repos/cran/setup
 RUN apt-get update && apt-get -y install --no-install-recommends \

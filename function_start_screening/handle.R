@@ -1,16 +1,43 @@
-source("utils/queue_triggers.R")
-
 start_screening <- function(req, res) {
+
+  source("utils/queue_triggers.R")
+  source("services/screen_csvs.R")
 
   payload <- get_queue_message_payload(req)
   
-  dataSetId <- payload$startScreening$dataSetId
+  message(payload)
 
-  message("Processing data set: ", dataSetId, "\n")
+  data_set_id <- payload$dataSetId
+
+  message("Starting to screen data set: ", data_set_id, "\n")
+  
+  log_dir <- Sys.getenv("LOG_DIR")
+  
+  data_file_path <- payload$dataFilePath
+  data_file_name <- payload$dataFileName
+  data_file_sas_token <- payload$dataFileSasToken
+  meta_file_path <- payload$metaFilePath
+  meta_file_name <- payload$metaFileName
+  meta_file_sas_token <- payload$metaFileSasToken
+
+  result <- tryCatch({
+
+    result <- screen_csvs(data_file_path, data_file_name, data_file_sas_token, meta_file_path, meta_file_name, meta_file_sas_token, data_set_id, log_dir)
+
+    res$status <- 200
+    res$body <- result
+  }, error = function(e) {
+    print(paste0("Error details: ", e))
+    res$status <- 400
+    res$body <- paste0("An unhandled exception occurred in eesyscreener: ", e)
+    # TODO: Add logging
+  }, finally = {
+    # Intentionally blank
+  })
   
   list(
     status = 200,
     headers = list("Content-Type" = "application/json"),
-    body = list(message = paste0("Screening started for dataSetId ", dataSetId))
+    body = list(message = paste0("Screening complete for dataSetId ", data_set_id))
   )
 }
