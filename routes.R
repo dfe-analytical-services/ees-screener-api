@@ -27,3 +27,11 @@ start_screening_route <- function(req, res) {
   source(here::here("src/function_handlers/handle_start_screening.R"))
   handle_start_screening(req, res)
 }
+
+#* @parser json
+#* @serializer unboxedJSON
+#* @get /api/progress
+screen_route <- function(req, res) {
+  source(here::here("src/function_handlers/handle_check_progress.R"))
+  handle_check_progress(req, res)
+}
