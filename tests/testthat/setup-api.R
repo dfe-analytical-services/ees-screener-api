@@ -5,6 +5,8 @@ source("../../create_server.R")
 
 seconds_to_wait_for_server_start = 30
 
+log_dir = tempdir()
+
 api_host <- function() "127.0.0.1"
 api_port <- function() 13001
 api_url <- function(host = api_host(), port = api_port()) {
@@ -20,14 +22,15 @@ api_start <- function(host = api_host(), port = api_port(), server = create_serv
   mirai::daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT, output = TRUE)
   m <- mirai::mirai(
     {
-      withr::local_envvar(LOG_DIR = "/tmp")
+      withr::local_envvar(LOG_DIR = log_dir)
 
       server |>
         plumber::pr_run(host = host, port = port)
     },
     host = host,
     port = port,
-    server = server
+    server = server,
+    log_dir = log_dir
   )
 
   withr::defer(envir = testthat::teardown_env(), {

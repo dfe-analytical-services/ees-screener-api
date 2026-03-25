@@ -23,6 +23,7 @@ See [Request format](#request-format) for details on how to construct API reques
 GET localhost:8000/api/healthcheck
 POST localhost:8000/api/screen
 POST localhost:8000/function_start_screening
+GET localhost:8000/api/progress?dataSetId=<data set id>
 ```
 
 ### Running locally from the CLI
