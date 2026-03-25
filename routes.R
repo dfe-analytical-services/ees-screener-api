@@ -2,7 +2,7 @@
 #* @serializer unboxedJSON
 #* @get /api/healthcheck
 healthcheck_route <- function() {
-  source(here::here("function_healthcheck/handle_healthcheck.R"))
+  source(here::here("src/function_handlers/handle_healthcheck.R"))
   handle_healthcheck()
 }
 
@@ -10,7 +10,7 @@ healthcheck_route <- function() {
 #* @serializer unboxedJSON
 #* @post /api/screen
 screen_route <- function(req, res) {
-  source(here::here("function_screen/handle_screen.R"))
+  source(here::here("src/function_handlers/handle_screen.R"))
   handle_screen(req, res)
 }
 
@@ -24,6 +24,6 @@ screen_route <- function(req, res) {
 #* @serializer unboxedJSON
 #* @post /function_start_screening
 start_screening_route <- function(req, res) {
-  source(here::here("function_start_screening/handle_start_screening.R"))
+  source(here::here("src/function_handlers/handle_start_screening.R"))
   handle_start_screening(req, res)
 }

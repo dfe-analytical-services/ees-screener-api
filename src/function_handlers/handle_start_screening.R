@@ -1,7 +1,7 @@
 handle_start_screening <- function(req, res) {
 
-  source(here::here("utils/queue_triggers.R"))
-  source(here::here("services/screen_csvs.R"))
+  source(here::here("src/utils/queue_triggers.R"))
+  source(here::here("src/services/screen_csvs.R"))
 
   payload <- get_queue_message_payload(req)
   

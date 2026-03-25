@@ -2,7 +2,7 @@
 #* If the storage account environment variables are not set, local file paths will be assumed instead
 handle_screen <- function(req, res) {
   
-  source(here::here("services/screen_csvs.R"))
+  source(here::here("src/services/screen_csvs.R"))
   
   data_file_path <- req$body$dataFilePath
   data_file_name <- req$body$dataFileName
