@@ -364,3 +364,8 @@ FodyWeavers.xsd
 
 # Rider
 .idea
+.Rproj.user
+
+*.Rproj
+.RData
+.Rhistory

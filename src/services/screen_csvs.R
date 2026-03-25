@@ -1,16 +1,15 @@
-#* Test the service is running
-#* @serializer unboxedJSON
-#* @get /api/screen
-test_get <- function() {
-  list("Success")
-}
-
 #* Screen data set files located at the supplied blob storage paths using the eesyscreener package
 #* If the storage account environment variables are not set, local file paths will be assumed instead
-#* @parser json
-#* @serializer unboxedJSON
-#* @post /api/screen
-screen <- function(req, res) {
+screen_csvs <- function(
+  data_file_path,
+  data_file_name,
+  data_file_sas_token,
+  meta_file_path,
+  meta_file_name,
+  meta_file_sas_token,
+  data_set_id = NULL,
+  log_dir = NULL) {
+  
   library(eesyscreener)
   library(curl)
 
@@ -21,13 +20,6 @@ screen <- function(req, res) {
     storage_account_url == "",
     blob_container_name == ""
   )
-
-  data_file_path <- req$body$dataFilePath
-  data_file_name <- req$body$dataFileName
-  data_file_sas_token <- req$body$dataFileSasToken
-  meta_file_path <- req$body$metaFilePath
-  meta_file_name <- req$body$metaFileName
-  meta_file_sas_token <- req$body$metaFileSasToken
 
   if (use_local_storage) {
     temp_data_path <- data_file_path
@@ -51,7 +43,7 @@ screen <- function(req, res) {
     message(
       "Downloading data file from Azure Blob Storage: ",
       data_file_path,
-      " via URL with SAS token "
+      " via URL with SAS token."
     )
 
     curl_download(url = data_file_url_with_token, destfile = temp_data_path, handle = h)
@@ -59,34 +51,23 @@ screen <- function(req, res) {
     message(
       "Downloading metadata file from Azure Blob Storage: ",
       meta_file_path,
-      " via URL with SAS token "
+      " via URL with SAS token."
     )
     
     curl_download(url = meta_file_url_with_token, destfile = temp_meta_path, handle = h)
   }
 
-  result <- tryCatch({
+  message("Calling eesyscreener to screen downloaded files...")
 
-    message("Calling eesyscreener to screen downloaded files...")
+  result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name, data_set_id, log_dir)
 
-    result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name)
+  message("eesyscreener screened files successfully!")
 
-    message("eesyscreener screened files successfully!")
+  # Remove test files if sourcing from blob storage (and not if sourcing from local directory)
+  if (!use_local_storage) {
+    file.remove(temp_data_path)
+    file.remove(temp_meta_path)
+  }
 
-    # Remove test files if sourcing from blob storage (and not if sourcing from local directory)
-    if (!use_local_storage) {
-      file.remove(temp_data_path)
-      file.remove(temp_meta_path)
-    }
-
-    res$status <- 200
-    res$body <- result
-  }, error = function(e) {
-    print(paste0("Error details: ", e))
-    res$status <- 400
-    res$body <- paste0("An unhandled exception occurred in eesyscreener: ", e)
-    # TODO: Add logging
-  }, finally = {
-    # Intentionally blank
-  })
+  return(result)
 }

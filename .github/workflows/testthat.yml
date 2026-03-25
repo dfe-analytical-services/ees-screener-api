@@ -30,9 +30,8 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: 
-            github::dfe-analytical-services/eesyscreener@v0.2.0
+            github::dfe-analytical-services/eesyscreener@v0.2.2
             mirai
-            purrr
             httr2
 
       - name: Run tests
