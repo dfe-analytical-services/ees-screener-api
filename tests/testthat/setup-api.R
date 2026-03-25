@@ -1,6 +1,9 @@
 # Credit to https://jakubsobolewski.com/r-tests-gallery/plumber/
 # for the examples of how to do this
+
 source("../../create_server.R")
+
+seconds_to_wait_for_server_start = 30
 
 api_host <- function() "127.0.0.1"
 api_port <- function() 13001
@@ -37,7 +40,7 @@ api_start <- function(host = api_host(), port = api_port(), server = create_serv
   })
 
   # Wait for the API to be up
-  for (i in seq_len(30)) {
+  for (i in seq_len(seconds_to_wait_for_server_start)) {
     if (pingr::is_up(host, port)) break
     
     if (!mirai::unresolved(m)) {

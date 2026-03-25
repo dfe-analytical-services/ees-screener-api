@@ -10,7 +10,7 @@ See [Request format](#request-format) for details on how to construct API reques
 
 1. `pak::lockfile_install()` - install dependencies
 2. `source("run.R")` - set API running
-3. The API endpoint will then be live at `http://localhost:8000/api/healthcheck`
+3. The API healthcheck endpoint will then be live at `http://localhost:8000/api/healthcheck`
 
 ### Setup from scratch in VS Code
 
@@ -57,7 +57,7 @@ docker run --rm \
   data-screener
 ```
 
-and call the Azure Function endpoint at http://localhost:7078/api/healthcheck.
+and call the Azure Function healthcheck endpoint at http://localhost:7078/api/healthcheck.
 
 The environment variables are necessary because when run using the `mcr.microsoft.com/azure-functions` base Docker image,
 `local.settings.json` is not used.

@@ -2,7 +2,7 @@
 #* @serializer unboxedJSON
 #* @get /api/healthcheck
 healthcheck_route <- function() {
-  source(here::here("function_healthcheck/handle.R"))
+  source(here::here("function_healthcheck/handle_healthcheck.R"))
   handle_healthcheck()
 }
 
@@ -10,22 +10,20 @@ healthcheck_route <- function() {
 #* @serializer unboxedJSON
 #* @post /api/screen
 screen_route <- function(req, res) {
-  source(here::here("function_screen/handle.R"))
+  source(here::here("function_screen/handle_screen.R"))
   handle_screen(req, res)
 }
 
+#* Note that routes for queue-triggered Functions are enforced by the
+#* Azure Functions host and runtime, and always take the name of the
+#* folder in which the function.json for the Function exists, hence
+#* this route is not prefixed with /api or of the normal naming
+#* conventions.
+#*
 #* @parser json
 #* @serializer unboxedJSON
 #* @post /function_start_screening
 start_screening_route <- function(req, res) {
-  source(here::here("function_start_screening/handle.R"))
+  source(here::here("function_start_screening/handle_start_screen.R"))
   handle_start_screening(req, res)
-}
-
-#* @parser json
-#* @serializer unboxedJSON
-#* @get /api/progress
-check_progress_route <- function(req, res) {
-  source(here::here("function_check_progress/handle.R"))
-  handle_check_progress(req, res)
 }
