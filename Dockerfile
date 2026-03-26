@@ -3,7 +3,8 @@ FROM mcr.microsoft.com/azure-functions/dotnet:4-dotnet8.0
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
     R_VERSION=4.5.2 \
-    LOG_DIR=/tmp
+    LOG_DIR=/tmp \
+    DD_CHECKS=TRUE
 
 # Install system dependencies and tools - https://packagemanager.posit.co/client/#/repos/cran/setup
 RUN apt-get update && apt-get -y install --no-install-recommends \
@@ -32,7 +33,7 @@ RUN wget https://cdn.posit.co/r/debian-12/pkgs/r-${R_VERSION}_1_$(dpkg --print-a
 # Install R packages using pre-complied binaries for Debian 12 (Bookworm)
 RUN R -e "options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/latest')); \
            install.packages('pak'); \
-           pak::pak(c('plumber@1.3.3', 'here@1.0.2', 'dfe-analytical-services/eesyscreener@v0.2.2'));"
+           pak::pak(c('plumber@1.3.3', 'here@1.0.2', 'dfe-analytical-services/eesyscreener@v0.2.3'));"
 
 WORKDIR /home/site/wwwroot
 COPY / /home/site/wwwroot

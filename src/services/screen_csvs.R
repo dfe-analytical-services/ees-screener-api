@@ -15,7 +15,8 @@ screen_csvs <- function(
 
   storage_account_url <- Sys.getenv("STORAGE_URL")
   blob_container_name <- Sys.getenv("STORAGE_CONTAINER_NAME")
-
+  dd_checks <- as.logical(Sys.getenv("DD_CHECKS", unset = "TRUE"))
+  
   use_local_storage <- all(
     storage_account_url == "",
     blob_container_name == ""
@@ -59,7 +60,7 @@ screen_csvs <- function(
 
   message("Calling eesyscreener to screen downloaded files...")
 
-  result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name, data_set_id, log_dir)
+  result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name, data_set_id, log_dir, dd_checks = dd_checks)
 
   message("eesyscreener screened files successfully!")
 
