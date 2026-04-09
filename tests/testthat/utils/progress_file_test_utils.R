@@ -1,6 +1,8 @@
 #* Create a progress JSON file to represent the current screening progress for a particular data set.
-create_progress_file <- function(data_set_id, percentage_complete, stage) {
+create_progress_file <- function(data_set_id, percentage_complete = 100, stage = 'Complete') {
   
+  filepath = paste0(tempdir(), "/eesyscreener_log_", data_set_id, ".json")
+
   file_content <- list(
     progress = percentage_complete,
     status = stage,
@@ -16,4 +18,6 @@ create_progress_file <- function(data_set_id, percentage_complete, stage) {
   )
 
   write_json(file_content, paste0(tempdir(), "/eesyscreener_log_", data_set_id, ".json"))
+
+  return(filepath)
 }

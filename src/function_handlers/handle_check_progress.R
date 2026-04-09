@@ -1,7 +1,7 @@
 #* Check the screening progress for a particular data set.
 handle_check_progress <- function(req, res) {
 
-  source(here::here("src/services/check_progress.R"))
+  source(here::here("src/services/screener_progress.R"))
   
   data_set_id <- req$args$dataSetId
 
