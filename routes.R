@@ -40,6 +40,6 @@ screen_route <- function(req, res) {
 #* @serializer unboxedJSON
 #* @delete /api/progress
 screen_route <- function(req, res) {
-  source(here::here("src/function_handlers/handle_delete_progress_file.R"))
-  handle_delete_progress_file(req, res)
+  source(here::here("src/function_handlers/handle_delete_progress_files.R"))
+  handle_delete_progress_files(req, res)
 }
