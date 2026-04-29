@@ -1,9 +1,12 @@
 #* Delete the screening progress file for a particular set of data sets.
 handle_delete_progress_files <- function(req, res) {
 
+  source(here::here("src/utils/request_utils.R"))
   source(here::here("src/services/screener_progress.R"))
   
-  data_set_ids <- req$args$data_set_id
+  params <- get_request_parameters(req)
+
+  data_set_ids <- params$data_set_id
 
   if (is.null(data_set_ids) || length(data_set_ids) == 0) {
     res$status <- 400

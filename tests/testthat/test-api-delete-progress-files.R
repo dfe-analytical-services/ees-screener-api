@@ -65,7 +65,7 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
 })
 
 
-testthat::test_that("DELETE to the progress deletion function with a data_set_id for an existing progress file deletes the progress file", {
+testthat::test_that("DELETE to the progress deletion function with a data_set_id for multiple existing progress files deletes the progress file", {
   
   data_set_1_id = "existing_1"
   data_set_2_id = "existing_2"
@@ -80,7 +80,37 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
 
   request <- api_url(api_host(), api_port()) |>
     httr2::request() |>
-    httr2::req_url_path("api/progress") |>httr2::req_url_query(data_set_id = c(data_set_1_id, data_set_2_id, non_existent_data_set_id), .multi = "explode") |>
+    httr2::req_url_path("api/progress") |>
+    httr2::req_url_query(data_set_id = c(data_set_1_id, data_set_2_id, non_existent_data_set_id), .multi = "explode") |>
+    httr2::req_method("DELETE")
+
+  resp <- httr2::req_perform(request)
+
+  expect_equal(httr2::resp_status(resp), 204)
+
+  # Ensure the target files were successfully deleted.
+  expect_false(file.exists(data_set_1_filepath))
+  expect_false(file.exists(data_set_2_filepath))
+})
+
+
+testthat::test_that("DELETE to the progress deletion function with a data_set_id for multiple existing progress files (comma-separated) deletes the progress file", {
+  
+  data_set_1_id = "existing_1"
+  data_set_2_id = "existing_2"
+  non_existent_data_set_id = "non_existent"
+
+  # Create a temporary existing progress file.
+  data_set_1_filepath = create_progress_file(data_set_1_id)
+  data_set_2_filepath = create_progress_file(data_set_2_id)
+
+  expect_true(file.exists(data_set_1_filepath))
+  expect_true(file.exists(data_set_2_filepath))
+
+  request <- api_url(api_host(), api_port()) |>
+    httr2::request() |>
+    httr2::req_url_path("api/progress") |>
+    httr2::req_url_query(data_set_id = paste0(data_set_1_id, ",", data_set_2_id, ",", non_existent_data_set_id)) |>
     httr2::req_method("DELETE")
 
   resp <- httr2::req_perform(request)
