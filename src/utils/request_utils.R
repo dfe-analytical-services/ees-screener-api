@@ -1,7 +1,7 @@
 #* The Azure Function runtime alters the request when forwarding onto Functions.
 #* In order to ensure we have a consistent behaviour when testing inside and
-#* outside of the runtime, we get request parameters from the original unaltered
-#* query string.
+#* outside of the runtime, we support get request parameters in a consistent way
+#* both inside and outside the Azure Function runtime.
 #* 
 #* This helps us to consistently receive, for instance, repeated request
 #* parameters (e.g. "?id=1&id=2") as an array of the values in the repeated
