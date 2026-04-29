@@ -1,29 +1,33 @@
-#* Check the screening progress for a particular data set.
+#* Check the screening progress for a particular set of data sets.
 handle_check_progress <- function(req, res) {
 
+  source(here::here("src/utils/request_utils.R"))
   source(here::here("src/services/screener_progress.R"))
   
-  data_set_id <- req$args$dataSetId
+  params <- get_request_parameters(req)
 
-  if (is.null(data_set_id)) {
+  data_set_ids = params$data_set_id
+
+  if (is.null(data_set_ids) || length(data_set_ids) == 0) {
     res$status <- 400
     return(list(
-      message = "Query parameter dataSetId must be specified."
+      message = "Query parameter data_set_id must be specified."
     ))
   }
 
-  progress = check_progress(data_set_id)
+  Filter(Negate(is.null), lapply(data_set_ids, function(data_set_id) {
+    progress = check_progress(data_set_id)
 
-  if (is.null(progress)) {
-    res$status <- 404
-    return(list(
-      message = paste0("A progress file for dataSetId \"", data_set_id, "\" was not found.")
-    ))
-  }
-
-  res$status <- 200
-  res$body <- list(
-    percentComplete = progress$progress,
-    stage = progress$status[1]
-  )
+    if (is.null(progress)) {
+      return();
+    }
+    
+    res$status <- 200
+    res$body <- list(
+      data_set_id = data_set_id,
+      percentage_complete = progress$progress,
+      stage = progress$status[1],
+      completed = progress$completed
+    )
+  }))
 }

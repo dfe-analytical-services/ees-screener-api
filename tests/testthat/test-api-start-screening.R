@@ -1,15 +1,16 @@
 source("utils/queue_trigger_test_utils.R")
+source("utils/progress_file_test_utils.R")
 
 testthat::test_that("POST to the queue-triggered start_screening function returns success and expected structure for valid local files", {
   
   body <- create_queue_trigger_message_payload(
     'startScreening',
     list(
-      dataFileName = "pass.csv",
-      dataFilePath = "example-data/pass.csv",
-      metaFileName = "pass.meta.csv",
-      metaFilePath = "example-data/pass.meta.csv",
-      dataSetId = "data-set-id"
+      data_file_name = "pass.csv",
+      data_file_path = "example-data/pass.csv",
+      meta_file_name = "pass.meta.csv",
+      meta_file_path = "example-data/pass.meta.csv",
+      data_set_id = "data-set-id"
     )
   )
 
@@ -34,6 +35,14 @@ testthat::test_that("POST to the queue-triggered start_screening function return
     names(result[["results_table"]][[1]]),
     c("check", "result", "message", "stage")
   )
+
+  # Check that a progress log has been output and that it shows the screening process
+  # has completed successfully.
+  progress_log <- get_progress_file("data-set-id")
+
+  expect_equal(progress_log$progress[[1]], 100)
+  expect_equal(progress_log$status[[1]], "PASS")
+  expect_equal(progress_log$completed[[1]], TRUE)
 })
 
 testthat::test_that("POST to the queue-triggered start_screening function returns error for missing files", {
@@ -41,11 +50,11 @@ testthat::test_that("POST to the queue-triggered start_screening function return
   body <- create_queue_trigger_message_payload(
     'startScreening',
     list(
-      dataFileName = "missing.csv",
-      dataFilePath = "example-data/missing.csv",
-      metaFileName = "missing.meta.csv",
-      metaFilePath = "example-data/missing.meta.csv",
-      dataSetId = "data-set-id"
+      data_file_name = "missing.csv",
+      data_file_path = "example-data/missing.csv",
+      meta_file_name = "missing.meta.csv",
+      meta_file_path = "example-data/missing.meta.csv",
+      data_set_id = "data-set-id"
     )
   )
 
@@ -55,9 +64,9 @@ testthat::test_that("POST to the queue-triggered start_screening function return
     encode = "json"
   )
 
-  expect_equal(httr::status_code(resp), 400)
+  expect_equal(httr::status_code(resp), 200)
   result <- httr::content(resp, as = "text")
 
   # error message originates from eesyscreener
-  expect_match(result, "unhandled exception.*No file found")
+  expect_match(result, "No file found at example-data/missing.csv")
 })
