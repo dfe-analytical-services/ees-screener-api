@@ -17,7 +17,8 @@ check_progress <- function(data_set_id) {
 
   list(
     progress = file_contents$progress,
-    status = file_contents$status
+    status = file_contents$status,
+    completed = file_contents$completed
   )
 }
 

@@ -5,18 +5,18 @@ handle_start_screening <- function(req, res) {
 
   payload <- get_queue_message_payload(req)
   
-  data_set_id <- payload$dataSetId
+  data_set_id <- payload$data_set_id
 
   message("Starting to screen data set: ", data_set_id, "\n")
   
   log_dir <- Sys.getenv("LOG_DIR")
   
-  data_file_path <- payload$dataFilePath
-  data_file_name <- payload$dataFileName
-  data_file_sas_token <- payload$dataFileSasToken
-  meta_file_path <- payload$metaFilePath
-  meta_file_name <- payload$metaFileName
-  meta_file_sas_token <- payload$metaFileSasToken
+  data_file_path <- payload$data_file_path
+  data_file_name <- payload$data_file_name
+  data_file_sas_token <- payload$data_file_sas_token
+  meta_file_path <- payload$meta_file_path
+  meta_file_name <- payload$meta_file_name
+  meta_file_sas_token <- payload$meta_file_sas_token
 
   result <- tryCatch({
 

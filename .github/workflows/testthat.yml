@@ -30,7 +30,7 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: 
-            github::dfe-analytical-services/eesyscreener@v0.2.4
+            github::dfe-analytical-services/eesyscreener@v0.3.0
             mirai
             httr2
 

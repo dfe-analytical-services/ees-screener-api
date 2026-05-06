@@ -41,9 +41,9 @@ testthat::test_that("POST to the HTTP-triggered screen function returns error fo
     encode = "json"
   )
 
-  expect_equal(httr::status_code(resp), 400)
+  expect_equal(httr::status_code(resp), 200)
   result <- httr::content(resp, as = "text")
 
   # error message originates from eesyscreener
-  expect_match(result, "unhandled exception.*No file found")
+  expect_match(result, "No file found at example-data/missing.csv")
 })
