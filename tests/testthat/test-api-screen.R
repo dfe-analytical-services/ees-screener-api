@@ -5,15 +5,16 @@ testthat::test_that("POST to the HTTP-triggered screen function returns success 
     metaFileName = "pass.meta.csv",
     metaFilePath = "example-data/pass.meta.csv"
   )
-  resp <- httr::POST(
-    paste0(api_url(), "/api/screen"),
-    body = body,
-    encode = "json"
-  )
+  
+  resp <- httr2::request(api_url(api_host(), api_port())) |>
+    httr2::req_url_path("/api/screen") |>
+    httr2::req_body_json(body) |>
+    httr2::req_method("POST") |>
+    httr2::req_perform()
+  
+  expect_equal(httr2::resp_status(resp), 200)
 
-  expect_equal(httr::status_code(resp), 200)
-
-  result <- httr::content(resp, as = "parsed")
+  result <- httr2::resp_body_json(resp)
 
   expect_true(is.list(result))
 
@@ -35,14 +36,15 @@ testthat::test_that("POST to the HTTP-triggered screen function returns error fo
     metaFileName = "missing.meta.csv",
     metaFilePath = "example-data/missing.meta.csv"
   )
-  resp <- httr::POST(
-    paste0(api_url(), "/api/screen"),
-    body = body,
-    encode = "json"
-  )
-
-  expect_equal(httr::status_code(resp), 200)
-  result <- httr::content(resp, as = "text")
+  resp <- httr2::request(api_url(api_host(), api_port())) |>
+    httr2::req_error(is_error = function(resp) FALSE) |>
+    httr2::req_url_path("/api/screen") |>
+    httr2::req_body_json(body) |>
+    httr2::req_method("POST") |>
+    httr2::req_perform()
+  
+  expect_equal(httr2::resp_status(resp), 200)
+  result <- httr2::resp_body_string(resp)
 
   # error message originates from eesyscreener
   expect_match(result, "No file found at example-data/missing.csv")

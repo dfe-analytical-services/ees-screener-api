@@ -1,11 +1,19 @@
-#* Create a progress JSON file to represent the current screening progress for a particular data set.
-create_progress_file <- function(data_set_id, percentage_complete = 100, stage = 'Complete', completed = TRUE) {
+get_progress_file <- function(data_set_id) {
+  filepath = .get_progress_filepath(data_set_id)
   
-  filepath = paste0(tempdir(), "/eesyscreener_log_", data_set_id, ".json")
+  if (file.exists(filepath)) {
+    return (read_json(filepath))
+  }
+}
+
+#* Create a progress JSON file to represent the current screening progress for a particular data set.
+create_progress_file <- function(data_set_id, percentage_complete = 100, status = 'Complete', completed = TRUE) {
+  
+  filepath = .get_progress_filepath(data_set_id)
 
   file_content <- list(
     progress = percentage_complete,
-    status = stage,
+    status = status,
     completed = completed,
     results = list(
       list(
@@ -18,12 +26,11 @@ create_progress_file <- function(data_set_id, percentage_complete = 100, stage =
     )
   )
 
-  write_json(file_content, paste0(tempdir(), "/eesyscreener_log_", data_set_id, ".json"))
+  write_json(file_content, filepath)
 
   return(filepath)
 }
 
-get_progress_file <- function(data_set_id) {
-  filepath = paste0(tempdir(), "/eesyscreener_log_", data_set_id, ".json")
-  return (read_json(filepath))
+.get_progress_filepath <- function(data_set_id) {
+  paste0(tempdir(), "/eesyscreener_log_", data_set_id, ".json")
 }

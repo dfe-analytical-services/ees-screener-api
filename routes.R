@@ -38,6 +38,14 @@ screen_route <- function(req, res) {
 
 #* @parser json
 #* @serializer unboxedJSON
+#* @get /api/completion-reports
+screen_route <- function(req, res) {
+  source(here::here("src/function_handlers/handle_get_completion_reports.R"))
+  handle_get_completion_reports(req, res)
+}
+
+#* @parser json
+#* @serializer unboxedJSON
 #* @delete /api/progress
 screen_route <- function(req, res) {
   source(here::here("src/function_handlers/handle_delete_progress_files.R"))

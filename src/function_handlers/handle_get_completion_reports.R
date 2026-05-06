@@ -1,8 +1,8 @@
-#* Check the screening progress for a particular set of data sets.
-handle_check_progress <- function(req, res) {
+#* Get the final screening completion reports for a particular set of data sets.
+handle_get_completion_reports <- function(req, res) {
 
   source(here::here("src/utils/request_utils.R"))
-  source(here::here("src/services/screener_progress.R"))
+  source(here::here("src/services/screener_completion_reports.R"))
   
   params <- get_request_parameters(req)
 
@@ -16,18 +16,16 @@ handle_check_progress <- function(req, res) {
   }
 
   Filter(Negate(is.null), lapply(data_set_ids, function(data_set_id) {
-    progress = check_progress(data_set_id)
-
-    if (is.null(progress)) {
+    completion_report = get_completion_report(data_set_id)
+    
+    if (is.null(completion_report)) {
       return();
     }
     
     res$status <- 200
-    res$body <- list(
-      data_set_id = data_set_id,
-      percentage_complete = progress$progress,
-      status = progress$status[1],
-      completed = progress$completed
+    res$body <- c(
+      list(data_set_id = data_set_id),
+      completion_report
     )
   }))
 }
