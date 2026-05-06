@@ -23,9 +23,9 @@ handle_get_completion_reports <- function(req, res) {
     }
     
     res$status <- 200
-    res$body <- c(
-      list(data_set_id = data_set_id),
-      completion_report
+    res$body <- list(
+      data_set_id = data_set_id,
+      completion_report = completion_report
     )
   }))
 }

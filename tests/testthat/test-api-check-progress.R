@@ -41,9 +41,9 @@ testthat::test_that("GET to the progress function with a data_set_id for an exis
   expect_equal(length(result), 1)
 
   expect_equal(result[[1]]$data_set_id, data_set_id)
-  expect_equal(result[[1]]$percentage_complete, percentage_complete)
-  expect_equal(result[[1]]$status, status)
-  expect_equal(result[[1]]$completed, completed)
+  expect_equal(result[[1]]$progress_report$percentage_complete, percentage_complete)
+  expect_equal(result[[1]]$progress_report$status, status)
+  expect_equal(result[[1]]$progress_report$completed, completed)
 })
 
 testthat::test_that("GET to the progress function with multiple data_set_ids (comma-separated) for existing progress files return the current progress", {
@@ -76,14 +76,14 @@ testthat::test_that("GET to the progress function with multiple data_set_ids (co
   expect_equal(length(result), 2)
 
   expect_equal(result[[1]]$data_set_id, data_set_1_id)
-  expect_equal(result[[1]]$percentage_complete, data_set_1_percentage_complete)
-  expect_equal(result[[1]]$status, data_set_1_status)
-  expect_equal(result[[1]]$completed, data_set_1_completed)
+  expect_equal(result[[1]]$progress_report$percentage_complete, data_set_1_percentage_complete)
+  expect_equal(result[[1]]$progress_report$status, data_set_1_status)
+  expect_equal(result[[1]]$progress_report$completed, data_set_1_completed)
 
   expect_equal(result[[2]]$data_set_id, data_set_2_id)
-  expect_equal(result[[2]]$percentage_complete, data_set_2_percentage_complete)
-  expect_equal(result[[2]]$status, data_set_2_status)
-  expect_equal(result[[2]]$completed, data_set_2_completed)
+  expect_equal(result[[2]]$progress_report$percentage_complete, data_set_2_percentage_complete)
+  expect_equal(result[[2]]$progress_report$status, data_set_2_status)
+  expect_equal(result[[2]]$progress_report$completed, data_set_2_completed)
 })
 
 testthat::test_that("GET to the progress function with multiple data_set_ids for existing progress files return the current progress", {
@@ -116,14 +116,14 @@ testthat::test_that("GET to the progress function with multiple data_set_ids for
   expect_equal(length(result), 2)
 
   expect_equal(result[[1]]$data_set_id, data_set_1_id)
-  expect_equal(result[[1]]$percentage_complete, data_set_1_percentage_complete)
-  expect_equal(result[[1]]$status, data_set_1_status)
-  expect_equal(result[[1]]$completed, data_set_1_completed)
+  expect_equal(result[[1]]$progress_report$percentage_complete, data_set_1_percentage_complete)
+  expect_equal(result[[1]]$progress_report$status, data_set_1_status)
+  expect_equal(result[[1]]$progress_report$completed, data_set_1_completed)
 
   expect_equal(result[[2]]$data_set_id, data_set_2_id)
-  expect_equal(result[[2]]$percentage_complete, data_set_2_percentage_complete)
-  expect_equal(result[[2]]$status, data_set_2_status)
-  expect_equal(result[[2]]$completed, data_set_2_completed)
+  expect_equal(result[[2]]$progress_report$percentage_complete, data_set_2_percentage_complete)
+  expect_equal(result[[2]]$progress_report$status, data_set_2_status)
+  expect_equal(result[[2]]$progress_report$completed, data_set_2_completed)
 })
 
 testthat::test_that("GET to the progress function with a data_set_id for an existing progress file and a non-existent one returns the existing progress and ignores the not found one", {
@@ -152,7 +152,7 @@ testthat::test_that("GET to the progress function with a data_set_id for an exis
   expect_equal(length(result), 1)
 
   expect_equal(result[[1]]$data_set_id, data_set_id)
-  expect_equal(result[[1]]$percentage_complete, percentage_complete)
-  expect_equal(result[[1]]$status, status)
-  expect_equal(result[[1]]$completed, completed)
+  expect_equal(result[[1]]$progress_report$percentage_complete, percentage_complete)
+  expect_equal(result[[1]]$progress_report$status, status)
+  expect_equal(result[[1]]$progress_report$completed, completed)
 })

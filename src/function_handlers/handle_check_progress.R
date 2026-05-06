@@ -25,9 +25,11 @@ handle_check_progress <- function(req, res) {
     res$status <- 200
     res$body <- list(
       data_set_id = data_set_id,
-      percentage_complete = progress$progress,
-      status = progress$status[1],
-      completed = progress$completed
+      progress_report = list(
+        percentage_complete = progress$progress,
+        status = progress$status[1],
+        completed = progress$completed
+      )
     )
   }))
 }

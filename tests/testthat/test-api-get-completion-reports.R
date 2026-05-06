@@ -1,4 +1,5 @@
 library(jsonlite)
+library(stringi)
 
 source("utils/completion_report_test_utils.R")
 
@@ -54,10 +55,10 @@ testthat::test_that("GET to the completion reports function with a data_set_id f
   expect_equal(length(result), 1)
 
   expect_equal(result[[1]]$data_set_id, data_set_id)
-  expect_equal(result[[1]]$passed, passed)
-  expect_equal(result[[1]]$api_suitable, api_suitable)
-  expect_equal(result[[1]]$overall_stage, overall_stage)
-  expect_equal(result[[1]]$results_table, results_table)
+  expect_equal(result[[1]]$completion_report$passed, passed)
+  expect_equal(result[[1]]$completion_report$api_suitable, api_suitable)
+  expect_equal(result[[1]]$completion_report$overall_stage, overall_stage)
+  expect_equal(result[[1]]$completion_report$results_table, results_table)
 })
 
 testthat::test_that("GET to the completion reports function with multiple data_set_ids (comma-separated) for existing completion report files return the reports", {
@@ -118,16 +119,16 @@ testthat::test_that("GET to the completion reports function with multiple data_s
   expect_equal(length(result), 2)
 
   expect_equal(result[[1]]$data_set_id, data_set_1_id)
-  expect_equal(result[[1]]$passed, data_set_1_passed)
-  expect_equal(result[[1]]$api_suitable, data_set_1_api_suitable)
-  expect_equal(result[[1]]$overall_stage, data_set_1_overall_stage)
-  expect_equal(result[[1]]$results_table, data_set_1_results_table)
+  expect_equal(result[[1]]$completion_report$passed, data_set_1_passed)
+  expect_equal(result[[1]]$completion_report$api_suitable, data_set_1_api_suitable)
+  expect_equal(result[[1]]$completion_report$overall_stage, data_set_1_overall_stage)
+  expect_equal(result[[1]]$completion_report$results_table, data_set_1_results_table)
 
   expect_equal(result[[2]]$data_set_id, data_set_2_id)
-  expect_equal(result[[2]]$passed, data_set_2_passed)
-  expect_equal(result[[2]]$api_suitable, data_set_2_api_suitable)
-  expect_equal(result[[2]]$overall_stage, data_set_2_overall_stage)
-  expect_equal(result[[2]]$results_table, data_set_2_results_table)
+  expect_equal(result[[2]]$completion_report$passed, data_set_2_passed)
+  expect_equal(result[[2]]$completion_report$api_suitable, data_set_2_api_suitable)
+  expect_equal(result[[2]]$completion_report$overall_stage, data_set_2_overall_stage)
+  expect_equal(result[[2]]$completion_report$results_table, data_set_2_results_table)
 })
 
 testthat::test_that("GET to the completion reports function with multiple data_set_ids for existing completion reports return the completion reports", {
@@ -188,16 +189,16 @@ testthat::test_that("GET to the completion reports function with multiple data_s
   expect_equal(length(result), 2)
 
   expect_equal(result[[1]]$data_set_id, data_set_1_id)
-  expect_equal(result[[1]]$passed, data_set_1_passed)
-  expect_equal(result[[1]]$api_suitable, data_set_1_api_suitable)
-  expect_equal(result[[1]]$overall_stage, data_set_1_overall_stage)
-  expect_equal(result[[1]]$results_table, data_set_1_results_table)
+  expect_equal(result[[1]]$completion_report$passed, data_set_1_passed)
+  expect_equal(result[[1]]$completion_report$api_suitable, data_set_1_api_suitable)
+  expect_equal(result[[1]]$completion_report$overall_stage, data_set_1_overall_stage)
+  expect_equal(result[[1]]$completion_report$results_table, data_set_1_results_table)
 
   expect_equal(result[[2]]$data_set_id, data_set_2_id)
-  expect_equal(result[[2]]$passed, data_set_2_passed)
-  expect_equal(result[[2]]$api_suitable, data_set_2_api_suitable)
-  expect_equal(result[[2]]$overall_stage, data_set_2_overall_stage)
-  expect_equal(result[[2]]$results_table, data_set_2_results_table)
+  expect_equal(result[[2]]$completion_report$passed, data_set_2_passed)
+  expect_equal(result[[2]]$completion_report$api_suitable, data_set_2_api_suitable)
+  expect_equal(result[[2]]$completion_report$overall_stage, data_set_2_overall_stage)
+  expect_equal(result[[2]]$completion_report$results_table, data_set_2_results_table)
 })
 
 testthat::test_that("GET to the completion reports function with a data_set_id for an existing completion report file and a non-existent one returns the existing completion report and ignores the not found one", {
@@ -237,8 +238,8 @@ testthat::test_that("GET to the completion reports function with a data_set_id f
   expect_equal(length(result), 1)
 
   expect_equal(result[[1]]$data_set_id, data_set_id)
-  expect_equal(result[[1]]$passed, passed)
-  expect_equal(result[[1]]$api_suitable, api_suitable)
-  expect_equal(result[[1]]$overall_stage, overall_stage)
-  expect_equal(result[[1]]$results_table, results_table)
+  expect_equal(result[[1]]$completion_report$passed, passed)
+  expect_equal(result[[1]]$completion_report$api_suitable, api_suitable)
+  expect_equal(result[[1]]$completion_report$overall_stage, overall_stage)
+  expect_equal(result[[1]]$completion_report$results_table, results_table)
 })

@@ -1,5 +1,7 @@
 # DfE EES Screener API
 
+[![R-CMD-check](https://github.com/dfe-analytical-services/ees-screener-api/actions/workflows/testthat.yml/badge.svg)](https://github.com/dfe-analytical-services/ees-screener-api/actions)
+
 A containerised Azure Function App consisting of an R Plumber API for the [DfE's data screener](https://github.com/dfe-analytical-services/eesyscreener).
 
 See [Request format](#request-format) for details on how to construct API requests.

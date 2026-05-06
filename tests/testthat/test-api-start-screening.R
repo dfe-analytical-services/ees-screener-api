@@ -1,3 +1,5 @@
+library(stringi)
+
 source("utils/queue_trigger_test_utils.R")
 source("utils/progress_file_test_utils.R")
 
