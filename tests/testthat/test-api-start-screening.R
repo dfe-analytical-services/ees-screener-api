@@ -26,6 +26,10 @@ testthat::test_that("POST to the queue-triggered start_screening function return
 
   expect_equal(httr2::resp_status(resp), 200)
 
+  result <- httr2::resp_body_json(resp)
+
+  expect_equal(result$message, "Screener finished successfully.")
+
   # Check that a progress log has been output and that it shows the screening process
   # has completed successfully.
   progress_log <- get_progress_file(data_set_id)
@@ -73,7 +77,9 @@ testthat::test_that("POST to the queue-triggered start_screening function return
     
   expect_equal(httr2::resp_status(resp), 404)
 
-  result <- httr2::resp_body_string(resp)
+  result <- httr2::resp_body_json(resp)
+
+  expect_equal(result$message, "No file found at example-data/missing.csv")
 
   # Expect a progress file to have been created showing that screening failed due to missing
   # files.
@@ -89,12 +95,8 @@ testthat::test_that("POST to the queue-triggered start_screening function return
   expect_true(is.list(completion_report))
   
   # These depend on eesyscreener, but are here to catch breaking changes to structure
-  expect_equal(
-    names(completion_report),
-    c("results_table", "overall_stage", "passed", "api_suitable")
-  )
-  expect_equal(
-    names(completion_report[["results_table"]][[1]]),
-    c("check", "result", "message", "stage")
-  )
+  expect_equal(completion_report$overall_stage[[1]], "No file found at example-data/missing.csv")
+  expect_equal(completion_report$passed[[1]], FALSE)
+  expect_equal(completion_report$api_suitable[[1]], FALSE)
+  expect_equal(completion_report$results_table, list())
 })
