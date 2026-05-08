@@ -1,3 +1,5 @@
+library(logger)
+
 #* Screen data set files located at the supplied blob storage paths using the eesyscreener package
 #* If the storage account environment variables are not set, local file paths will be assumed instead
 screen_csvs <- function(
@@ -26,7 +28,7 @@ screen_csvs <- function(
     temp_data_path <- data_file_path
     temp_meta_path <- meta_file_path
 
-    message(
+    log_info(
       "Storage account environment variables not set. Using local files: ",
       temp_data_path,
       " and ", temp_meta_path
@@ -41,7 +43,7 @@ screen_csvs <- function(
     h <- new_handle()
     handle_setheaders(h, "Accept-Encoding" = "gzip, zstd")
 
-    message(
+    log_info(
       "Downloading data file from Azure Blob Storage: ",
       data_file_path,
       " via URL with SAS token."
@@ -49,7 +51,7 @@ screen_csvs <- function(
 
     curl_download(url = data_file_url_with_token, destfile = temp_data_path, handle = h)
 
-    message(
+    log_info(
       "Downloading metadata file from Azure Blob Storage: ",
       meta_file_path,
       " via URL with SAS token."
@@ -58,11 +60,11 @@ screen_csvs <- function(
     curl_download(url = meta_file_url_with_token, destfile = temp_meta_path, handle = h)
   }
 
-  message("Calling eesyscreener to screen downloaded files...")
+  log_info("Calling eesyscreener to screen downloaded files...")
 
   result <- screen_csv(temp_data_path, temp_meta_path, data_file_name, meta_file_name, data_set_id, log_dir, dd_checks = dd_checks)
 
-  message("eesyscreener screened files successfully!")
+  log_info("eesyscreener screened files successfully!")
 
   # Remove test files if sourcing from blob storage (and not if sourcing from local directory)
   if (!use_local_storage) {

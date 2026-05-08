@@ -1,6 +1,8 @@
 # Credit to https://jakubsobolewski.com/r-tests-gallery/plumber/
 # for the examples of how to do this
 
+library(logger)
+
 source("../../create_server.R")
 
 seconds_to_wait_for_server_start = 30
@@ -50,10 +52,10 @@ api_start <- function(host = api_host(), port = api_port(), server = create_serv
       res <- m[]
       
       if (mirai::is_mirai_error(res) || mirai::is_error_value(res)) {
-        message("mirai failed: ", conditionMessage(res))
-        print(res$stack.trace)
+        log_error("mirai failed: ", conditionMessage(res))
+        log_error(res$stack.trace)
       } else {
-        print(res)
+        log_info(res)
       }
       
       stop("API process exited before opening port")

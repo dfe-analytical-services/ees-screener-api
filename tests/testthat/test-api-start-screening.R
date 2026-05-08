@@ -28,7 +28,7 @@ testthat::test_that("POST to the queue-triggered start_screening function return
 
   result <- httr2::resp_body_json(resp)
 
-  expect_equal(result$message, "Screener finished successfully.")
+  expect_equal(result$message, "Screening started.")
 
   # Check that a progress log has been output and that it shows the screening process
   # has completed successfully.
@@ -75,11 +75,11 @@ testthat::test_that("POST to the queue-triggered start_screening function return
     httr2::req_method("POST") |>
     httr2::req_perform()
     
-  expect_equal(httr2::resp_status(resp), 404)
+  expect_equal(httr2::resp_status(resp), 200)
 
   result <- httr2::resp_body_json(resp)
 
-  expect_equal(result$message, "No file found at example-data/missing.csv")
+  expect_equal(result$message, "Screening started.")
 
   # Expect a progress file to have been created showing that screening failed due to missing
   # files.

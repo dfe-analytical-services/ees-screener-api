@@ -1,3 +1,5 @@
+library(logger)
+
 #* Screen data set files located at the supplied blob storage paths using the eesyscreener package
 #* If the storage account environment variables are not set, local file paths will be assumed instead
 handle_screen <- function(req, res) {
@@ -18,10 +20,9 @@ handle_screen <- function(req, res) {
     res$status <- 200
     res$body <- result
   }, error = function(e) {
-    print(paste0("Error details: ", e))
+    log_error(paste0("Error details: ", e))
     res$status <- 400
     res$body <- paste0("An unhandled exception occurred in eesyscreener: ", e)
-    # TODO: Add logging
   }, finally = {
     # Intentionally blank
   })

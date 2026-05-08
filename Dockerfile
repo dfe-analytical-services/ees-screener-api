@@ -5,7 +5,8 @@ ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     R_VERSION=4.5.2 \
     LOG_DIR=/tmp \
     DD_CHECKS=TRUE \
-    LOG_SCREENING_RESULTS=FALSE
+    LOG_SCREENING_RESULTS=FALSE \
+    FUNCTIONS_WORKER_PROCESS_COUNT=4
 
 # Install system dependencies and tools - https://packagemanager.posit.co/client/#/repos/cran/setup
 RUN apt-get update && apt-get -y install --no-install-recommends \
