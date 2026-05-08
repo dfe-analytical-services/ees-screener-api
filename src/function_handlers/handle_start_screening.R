@@ -106,7 +106,7 @@ handle_start_screening <- function(req, res) {
     # Merge with existing progress file contents if available.
     create_progress_file(
       data_set_id = data_set_id,
-      percentage_complete = existing_progress_file$percentage_complete %||% 0,
+      percentage_complete = existing_progress_file$progress %||% 0,
       status = existing_progress_file$status %||% "An unhandled exception occurred in eesyscreener",
       completed = TRUE,
       results = existing_progress_file$results %||% list()
