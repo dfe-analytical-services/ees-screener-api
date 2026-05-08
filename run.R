@@ -4,9 +4,10 @@ library(logger)
 source(here::here("create_server.R"))
 source(here::here("src/utils/stdout_log_appender.R"))
 
-# Set up a pool of background workers.
-# 'multisession' spawns separate R processes.
-plan(multisession, workers = 4)
+# Set up a pool of background workers to be used by code blocks that execute
+# as futures (e.g. long-running background requests).
+number_of_concurrent_workers <- Sys.getenv("CONCURRENT_R_WORKERS", unset = 4)
+plan(multisession, workers = )
 
 log_appender(stdout_log_appender)
 log_formatter(formatter_paste)
