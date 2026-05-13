@@ -46,8 +46,8 @@ get_completion_report_route <- function(req, res) {
 
 #* @parser json
 #* @serializer unboxedJSON
-#* @delete /api/progress
-delete_progress_files_route <- function(req, res) {
-  source(here::here("src/function_handlers/handle_delete_progress_files.R"))
-  handle_delete_progress_files(req, res)
+#* @delete /api/progress-and-completion-files
+delete_progress_and_completion_files_route <- function(req, res) {
+  source(here::here("src/function_handlers/handle_delete_progress_and_completion_files.R"))
+  handle_delete_progress_and_completion_files(req, res)
 }

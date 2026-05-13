@@ -15,6 +15,8 @@ handle_get_completion_reports <- function(req, res) {
     ))
   }
 
+  res$status <- 200
+
   Filter(Negate(is.null), lapply(data_set_ids, function(data_set_id) {
     completion_report = get_completion_report(data_set_id)
     
@@ -22,7 +24,6 @@ handle_get_completion_reports <- function(req, res) {
       return();
     }
     
-    res$status <- 200
     res$body <- list(
       data_set_id = data_set_id,
       completion_report = completion_report

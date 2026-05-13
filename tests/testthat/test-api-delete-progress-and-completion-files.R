@@ -6,7 +6,7 @@ testthat::test_that("DELETE to the progress deletion function without a data_set
   resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
     httr2::req_error(is_error = function(resp) FALSE) |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_method("DELETE") |>
     httr2::req_perform()
 
@@ -26,7 +26,7 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
   resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
     httr2::req_error(is_error = function(resp) FALSE) |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_url_query(data_set_id = "not_found") |>
     httr2::req_method("DELETE") |>
     httr2::req_perform()
@@ -50,7 +50,7 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
 
   resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_url_query(data_set_id = data_set_id) |>
     httr2::req_method("DELETE") |>
     httr2::req_perform()
@@ -77,7 +77,7 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
 
   resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_url_query(data_set_id = c(data_set_1_id, data_set_2_id, non_existent_data_set_id), .multi = "explode") |>
     httr2::req_method("DELETE") |>
     httr2::req_perform()
@@ -105,7 +105,7 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
 
   resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_url_query(data_set_id = paste0(data_set_1_id, ",", data_set_2_id, ",", non_existent_data_set_id)) |>
     httr2::req_method("DELETE") |>
     httr2::req_perform()
