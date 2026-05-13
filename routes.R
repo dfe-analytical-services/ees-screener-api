@@ -31,15 +31,23 @@ start_screening_route <- function(req, res) {
 #* @parser json
 #* @serializer unboxedJSON
 #* @get /api/progress
-screen_route <- function(req, res) {
+get_progress_route <- function(req, res) {
   source(here::here("src/function_handlers/handle_check_progress.R"))
   handle_check_progress(req, res)
 }
 
 #* @parser json
 #* @serializer unboxedJSON
-#* @delete /api/progress
-screen_route <- function(req, res) {
-  source(here::here("src/function_handlers/handle_delete_progress_files.R"))
-  handle_delete_progress_files(req, res)
+#* @get /api/completion-reports
+get_completion_report_route <- function(req, res) {
+  source(here::here("src/function_handlers/handle_get_completion_reports.R"))
+  handle_get_completion_reports(req, res)
+}
+
+#* @parser json
+#* @serializer unboxedJSON
+#* @delete /api/progress-and-completion-files
+delete_progress_and_completion_files_route <- function(req, res) {
+  source(here::here("src/function_handlers/handle_delete_progress_and_completion_files.R"))
+  handle_delete_progress_and_completion_files(req, res)
 }

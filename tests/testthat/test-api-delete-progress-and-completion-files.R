@@ -3,13 +3,12 @@ library(jsonlite)
 source("utils/progress_file_test_utils.R")
 
 testthat::test_that("DELETE to the progress deletion function without a data_set_id returns a 400", {
-  request <- api_url(api_host(), api_port()) |>
+  resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
     httr2::req_error(is_error = function(resp) FALSE) |>
-    httr2::req_url_path("api/progress") |>
-    httr2::req_method("DELETE")
-
-  resp <- httr2::req_perform(request)
+    httr2::req_url_path("api/progress-and-completion-files") |>
+    httr2::req_method("DELETE") |>
+    httr2::req_perform()
 
   expect_equal(httr2::resp_status(resp), 400)
 
@@ -24,14 +23,13 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
     # Create a temporary existing progress file that will not be touched by the deletion request.
   filepath = create_progress_file('existing')
 
-  request <- api_url(api_host(), api_port()) |>
+  resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
     httr2::req_error(is_error = function(resp) FALSE) |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_url_query(data_set_id = "not_found") |>
-    httr2::req_method("DELETE")
-
-  resp <- httr2::req_perform(request)
+    httr2::req_method("DELETE") |>
+    httr2::req_perform()
 
   # Ensure a graceful status code is returned despite not finding the file to delete.
   expect_equal(httr2::resp_status(resp), 204)
@@ -50,13 +48,12 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
 
   expect_true(file.exists(filepath))
 
-  request <- api_url(api_host(), api_port()) |>
+  resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_url_query(data_set_id = data_set_id) |>
-    httr2::req_method("DELETE")
-
-  resp <- httr2::req_perform(request)
+    httr2::req_method("DELETE") |>
+    httr2::req_perform()
 
   expect_equal(httr2::resp_status(resp), 204)
 
@@ -78,13 +75,12 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
   expect_true(file.exists(data_set_1_filepath))
   expect_true(file.exists(data_set_2_filepath))
 
-  request <- api_url(api_host(), api_port()) |>
+  resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_url_query(data_set_id = c(data_set_1_id, data_set_2_id, non_existent_data_set_id), .multi = "explode") |>
-    httr2::req_method("DELETE")
-
-  resp <- httr2::req_perform(request)
+    httr2::req_method("DELETE") |>
+    httr2::req_perform()
 
   expect_equal(httr2::resp_status(resp), 204)
 
@@ -107,13 +103,12 @@ testthat::test_that("DELETE to the progress deletion function with a data_set_id
   expect_true(file.exists(data_set_1_filepath))
   expect_true(file.exists(data_set_2_filepath))
 
-  request <- api_url(api_host(), api_port()) |>
+  resp <- api_url(api_host(), api_port()) |>
     httr2::request() |>
-    httr2::req_url_path("api/progress") |>
+    httr2::req_url_path("api/progress-and-completion-files") |>
     httr2::req_url_query(data_set_id = paste0(data_set_1_id, ",", data_set_2_id, ",", non_existent_data_set_id)) |>
-    httr2::req_method("DELETE")
-
-  resp <- httr2::req_perform(request)
+    httr2::req_method("DELETE") |>
+    httr2::req_perform()
 
   expect_equal(httr2::resp_status(resp), 204)
 

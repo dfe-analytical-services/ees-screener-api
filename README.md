@@ -1,5 +1,7 @@
 # DfE EES Screener API
 
+[![R-CMD-check](https://github.com/dfe-analytical-services/ees-screener-api/actions/workflows/testthat.yml/badge.svg)](https://github.com/dfe-analytical-services/ees-screener-api/actions)
+
 A containerised Azure Function App consisting of an R Plumber API for the [DfE's data screener](https://github.com/dfe-analytical-services/eesyscreener).
 
 See [Request format](#request-format) for details on how to construct API requests.
@@ -94,7 +96,7 @@ http://localhost:7071/api/healthcheck
 You will need to install the R packages to run the API locally in R, update the command below and rerun. Make sure to update the Dockerfile and GitHub action as appropriate too as they are not yet working from a lockfile. `eesyscreener` needs installing separately as it is only available from GitHub currently.
 
 ```r
-pak::pak("dfe-analytical-services/eesyscreener@v0.3.0")
+pak::pak("dfe-analytical-services/eesyscreener@v0.3.1")
 
 pak::pak(
   c(
@@ -115,7 +117,7 @@ Note on pkg.lock file. This was added as part of development, but is not current
 To update it with the latest versions, you can use the following (updating the eesyscreener version number as needed):
 
 ```
-pak::lockfile_create(pkg = c("dfe-analytical-services/eesyscreener@v0.3.0","deps::."))
+pak::lockfile_create(pkg = c("dfe-analytical-services/eesyscreener@v0.3.1","deps::."))
 ```
 
 Restoring packages based on this lockfile, should then be doable using:

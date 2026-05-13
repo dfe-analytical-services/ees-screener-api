@@ -1,3 +1,5 @@
+library(jsonlite)
+
 #* Create a double-encoded JSON string under an overarching "Data" field to mimic how
 #* the Azure Function runtime delivers queue messages for custom Functions.
 #* The equivalent unboxing of these results is done in "src/utils/queue_triggers.R".

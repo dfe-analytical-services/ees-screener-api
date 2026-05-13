@@ -15,6 +15,8 @@ handle_check_progress <- function(req, res) {
     ))
   }
 
+  res$status <- 200
+  
   Filter(Negate(is.null), lapply(data_set_ids, function(data_set_id) {
     progress = check_progress(data_set_id)
 
@@ -22,12 +24,13 @@ handle_check_progress <- function(req, res) {
       return();
     }
     
-    res$status <- 200
     res$body <- list(
       data_set_id = data_set_id,
-      percentage_complete = progress$progress,
-      stage = progress$status[1],
-      completed = progress$completed
+      progress_report = list(
+        percentage_complete = progress$progress,
+        status = progress$status[1],
+        completed = progress$completed
+      )
     )
   }))
 }
