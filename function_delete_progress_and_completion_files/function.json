@@ -8,7 +8,7 @@
       "methods": [
         "delete"
       ],
-      "route": "progress"
+      "route": "progress-and-completion-files"
     },
     {
       "type": "http",
