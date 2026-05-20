@@ -1,5 +1,3 @@
-.stdout_con <- NULL
-
 #* This function acts as a log appender for use with the "logger" library.
 #* When registered, it will attempt to log directly to an environment's
 #* stdout pipe if it can find one. This allows code running in both the main
@@ -14,12 +12,14 @@ stdout_log_appender <- function(lines) {
   # to be able to log its output immediately rather than only when the future
   # completes (as per R's standard buffered stdout behaviour).
   if (file.exists("/proc/1/fd/1")) {
-    if (is.null(.stdout_con) || !isOpen(.stdout_con)) {
-      .stdout_con <<- file("/proc/1/fd/1", open = "ab", raw = TRUE)
-    }
+    stdout_con <- file("/proc/1/fd/1", open = "ab", raw = TRUE)
 
-    writeLines(lines, .stdout_con)
-    flush(.stdout_con)
+    tryCatch({
+      writeLines(lines, stdout_con)
+      flush(stdout_con)
+    }, finally = {
+      close(stdout_con)
+    })
   # Otherwise output normally.
   } else {
     writeLines(lines, stdout())
