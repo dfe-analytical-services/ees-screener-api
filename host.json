@@ -22,7 +22,8 @@
   },
   "extensions": {
     "queues": {
-      "maxPollingInterval": "00:00:02"
+      "maxPollingInterval": "00:00:02",
+      "newBatchThreshold": 0
     }
   }
 }
