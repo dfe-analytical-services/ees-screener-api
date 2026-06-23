@@ -38,7 +38,7 @@ COPY / /home/site/wwwroot
 # Install R packages using pre-complied binaries for Debian 12 (Bookworm)
 RUN R -e "options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/latest')); \
           install.packages('pak'); \
-          pak::pkg_install(c('dfe-analytical-services/eesyscreener@v0.3.1', 'deps::.'));"
+          pak::pkg_install(c('dfe-analytical-services/eesyscreener@v0.3.2', 'deps::.'));"
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

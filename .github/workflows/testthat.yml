@@ -25,8 +25,9 @@ jobs:
         with:
           cache: true
           extra-packages: 
-            github::dfe-analytical-services/eesyscreener@v0.3.1
+            github::dfe-analytical-services/eesyscreener@v0.3.2
             any::testthat
+            any::logger
             any::httr2
             any::mirai
             any::pingr
