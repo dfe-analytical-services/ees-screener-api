@@ -38,11 +38,18 @@ COPY / /home/site/wwwroot
 # Install R packages using pre-complied binaries for Debian 12 (Bookworm)
 RUN R -e "options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/latest')); \
           install.packages('pak'); \
-          pak::pkg_install(c('dfe-analytical-services/eesyscreener@v0.3.2', 'deps::.'));"
+          install.packages( \
+            'duckdb', \
+            repos = sprintf( \
+                'https://p3m.dev/cran/latest/bin/linux/manylinux_2_28-%s/%s', \
+                R.version['arch'], \
+                substr(getRversion(), 1, 3) \
+            ) \
+          ); \
+          pak::pkg_install(c('dfe-analytical-services/eesyscreener@v0.3.2', 'deps::.'), upgrade = FALSE);"
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
 # Call entrypoint script to dynamically set the "batchSize" queue property
 # as an environment variable, based upon the value of "CONCURRENT_R_WORKERS".
 ENTRYPOINT ["/entrypoint.sh"]

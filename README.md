@@ -111,6 +111,21 @@ pak::pak(
 )
 ```
 
+In Linux, the recommended duckdb install is from binary with the following:
+
+```
+install.packages( 
+  'duckdb', 
+  repos = sprintf( 
+    'https://p3m.dev/cran/latest/bin/linux/manylinux_2_28-%s/%s', 
+    R.version['arch'], 
+    substr(getRversion(), 1, 3) 
+  ) 
+)
+```
+
+Installing from source currently takes 50-60 mins, so not advised!
+
 #### Alternative package management
 
 Note on pkg.lock file. This was added as part of development, but is not currently used in workflows.
