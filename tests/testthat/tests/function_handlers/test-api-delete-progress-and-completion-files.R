@@ -1,6 +1,6 @@
 library(jsonlite)
 
-source("utils/progress_file_test_utils.R")
+source("../../utils/progress_file_test_utils.R")
 
 testthat::test_that("DELETE to the progress deletion function without a data_set_id returns a 400", {
   resp <- api_url(api_host(), api_port()) |>

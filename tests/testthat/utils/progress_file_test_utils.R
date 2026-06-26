@@ -31,6 +31,14 @@ create_progress_file <- function(data_set_id, percentage_complete = 100, status 
   return(filepath)
 }
 
+create_malformed_progress_file <- function(data_set_id) {
+
+  filepath = .get_progress_filepath(data_set_id)
+
+  # Write some incomplete JSON.
+  writeLines(c('{', '  "name": "value"'), con = filepath)
+}
+
 .get_progress_filepath <- function(data_set_id) {
   paste0(tempdir(), "/eesyscreener_log_", data_set_id, ".json")
 }

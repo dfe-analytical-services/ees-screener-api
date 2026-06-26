@@ -1,7 +1,7 @@
 library(jsonlite)
 library(stringi)
 
-source("utils/completion_report_test_utils.R")
+source("../../utils/completion_report_test_utils.R")
 
 testthat::test_that("GET to the completion reports function without a data_set_id returns a 400", {
   resp <- api_url(api_host(), api_port()) |>
@@ -242,4 +242,27 @@ testthat::test_that("GET to the completion reports function with a data_set_id f
   expect_equal(result[[1]]$completion_report$api_suitable, api_suitable)
   expect_equal(result[[1]]$completion_report$overall_stage, overall_stage)
   expect_equal(result[[1]]$completion_report$results_table, results_table)
+})
+
+testthat::test_that("GET to the completion reports function with a data_set_id for a malformed completion file attempts to re-read the file before failing", {
+  
+  # Create a temporary existing completion report file.
+  create_malformed_completion_report_file(data_set_id = "malformed")
+
+  elapsed_time <- system.time({
+    
+    resp <- api_url(api_host(), api_port()) |>
+      httr2::request() |>
+      httr2::req_url_path("api/completion-reports") |>
+      httr2::req_error(is_error = function(resp) FALSE) |>
+      httr2::req_url_query(data_set_id = "malformed") |>
+      httr2::req_method("GET") |>
+      httr2::req_perform()
+
+  })["elapsed"]
+
+  expect_equal(httr2::resp_status(resp), 500)
+
+  expect_gte(elapsed_time, 2) # Expect 2 retries at 1 second each (as specified in setup-api.R)
+  expect_lt(elapsed_time, 4)
 })
