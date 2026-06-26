@@ -35,6 +35,14 @@ create_completion_report_file <- function(
   return(filepath)
 }
 
+create_malformed_completion_report_file <- function(data_set_id) {
+
+  filepath = .get_completion_report_filepath(data_set_id)
+
+  # Write some incomplete JSON.
+  writeLines(c('{', '  "name": "value"'), con = filepath)
+}
+
 .get_completion_report_filepath <- function(data_set_id) {
   paste0(tempdir(), "/eesyscreener_log_", data_set_id, "_completion_report.json")
 }

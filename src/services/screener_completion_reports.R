@@ -11,6 +11,8 @@ create_completion_report <- function(results, data_set_id) {
 }
 
 get_completion_report <- function(data_set_id) {
+
+  source(here::here("src/utils/file_utils.R"))
   
   report_filepath <- .get_completion_report_filepath(data_set_id)
   
@@ -23,7 +25,7 @@ get_completion_report <- function(data_set_id) {
 
   log_info("Found completion report file", report_filepath)
     
-  fromJSON(report_filepath)
+  read_json_file(report_filepath)
 }
 
 delete_completion_report_file <- function(data_set_id) {

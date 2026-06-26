@@ -2,6 +2,8 @@ library(jsonlite)
 library(logger)
 
 check_progress <- function(data_set_id) {
+
+  source(here::here("src/utils/file_utils.R"))
   
   progress_filepath <- .get_progress_filepath(data_set_id)
   
@@ -14,7 +16,7 @@ check_progress <- function(data_set_id) {
 
   log_info("Found progress file", progress_filepath)
     
-  file_contents <- fromJSON(progress_filepath)
+  file_contents <- read_json_file(progress_filepath)
 
   list(
     progress = file_contents$progress,

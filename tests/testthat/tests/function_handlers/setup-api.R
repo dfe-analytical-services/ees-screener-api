@@ -25,6 +25,8 @@ api_start <- function(host = api_host(), port = api_port(), server = create_serv
   m <- mirai::mirai(
     {
       withr::local_envvar(LOG_DIR = log_dir)
+      withr::local_envvar(JSON_FILES_MAX_READ_ATTEMPTS = 3)
+      withr::local_envvar(JSON_FILES_RETRY_WAIT_IN_SECONDS = 1)
 
       server |>
         plumber::pr_run(host = host, port = port)

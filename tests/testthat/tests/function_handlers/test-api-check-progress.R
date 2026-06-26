@@ -156,3 +156,25 @@ testthat::test_that("GET to the progress function with a data_set_id for an exis
   expect_equal(result[[1]]$progress_report$status, status)
   expect_equal(result[[1]]$progress_report$completed, completed)
 })
+
+testthat::test_that("GET to the progress function with a data_set_id for a malformed progress file attempts to re-read the file before failing", {
+  
+  # Create a temporary existing progress file.
+  create_malformed_progress_file(data_set_id = "malformed")
+
+  elapsed_time <- system.time({
+
+    resp <- api_url(api_host(), api_port()) |>
+      httr2::request() |>
+      httr2::req_url_path("api/progress") |>
+      httr2::req_error(is_error = function(resp) FALSE) |>
+      httr2::req_url_query(data_set_id = "malformed") |>
+      httr2::req_method("GET") |>
+      httr2::req_perform()
+  })["elapsed"]
+
+  expect_equal(httr2::resp_status(resp), 500)
+
+  expect_gte(elapsed_time, 2) # Expect 2 retries at 1 second each (as specified in setup-api.R)
+  expect_lt(elapsed_time, 4)
+})
