@@ -1,7 +1,7 @@
 library(jsonlite)
 library(stringi)
 
-source("utils/completion_report_test_utils.R")
+source("../../utils/completion_report_test_utils.R")
 
 testthat::test_that("GET to the completion reports function without a data_set_id returns a 400", {
   resp <- api_url(api_host(), api_port()) |>

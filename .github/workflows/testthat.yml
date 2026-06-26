@@ -37,4 +37,4 @@ jobs:
       - name: Run tests
         shell: Rscript {0}
         run: |
-          testthat::test_dir("tests/testthat")
+          testthat::test_dir("tests/testthat/tests/function_handlers")

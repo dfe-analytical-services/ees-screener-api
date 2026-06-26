@@ -3,7 +3,7 @@
 
 library(logger)
 
-source("../../create_server.R")
+source("../../../../create_server.R")
 
 seconds_to_wait_for_server_start = 30
 

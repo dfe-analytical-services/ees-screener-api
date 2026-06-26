@@ -1,7 +1,7 @@
 library(stringi)
 
-source("utils/queue_trigger_test_utils.R")
-source("utils/progress_file_test_utils.R")
+source("../../utils/queue_trigger_test_utils.R")
+source("../../utils/progress_file_test_utils.R")
 
 testthat::test_that("POST to the queue-triggered start_screening function returns success and provides a progress and completion report for valid local files", {
   
