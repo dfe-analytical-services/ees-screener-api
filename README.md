@@ -23,9 +23,8 @@ See [Request format](#request-format) for details on how to construct API reques
 
 ```
 GET localhost:8000/api/healthcheck
-POST localhost:8000/api/screen
 POST localhost:8000/function_start_screening
-GET localhost:8000/api/progress?dataSetId=<data set id>
+GET localhost:8000/api/progress?data_set_id=<data set id>
 ```
 
 ### Running locally from the CLI
@@ -144,50 +143,167 @@ pak::lockfile_install()
 
 ### Azurite
 
-The screener's `POST` endpoint retrieves files from a local blob storage container based on the paths supplied in the request body. The connection details hard-coded into [screen_csvs.R](./services/screen_csvs.R) relate to the same storage container used by the main EES solution. This container can be started up by opening a terminal in the main project directory and running the start script, e.g.:
+The screener's `POST /function_start_screening` endpoint retrieves files from a blob storage container based on the environment variables `STORAGE_URL` and `STORAGE_CONTAINER_NAME`. If wanting to use the same storage container used by the main EES solution, use the following variable values:
 
+* STORAGE_URL: `DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://data-storage:10000/devstoreaccount1;QueueEndpoint=http://data-storage:10001/devstoreaccount1;`
+* STORAGE_CONTAINER_NAME: `releases-temp`
 ```
+
+The container can be started up by opening a terminal in the main project directory and running the start script, e.g.:
+
+```bash
 cd source/repos/dfe-analytical-services/explore-education-statistics
 pnpm start dataStorage
 ```
 
-If using a different storage container, the connection details can be changed by replacing the destination URL, key and container name in the controller. The custom storage container should also be assigned a `network`, so that the API can be started within the same network to allow cross-container communication.
+If using a different storage container, the connection details can be changed by replacing the destination URL and container name in the controller. The custom storage container should also be assigned a `network`, so that the API can be started within the same network to allow cross-container communication.
 
-## Request format
+If wanting to test files locally using local file storage rather than blob storage, refer to the [Testing](#testing) guide below.
 
-The `GET` endpoint is just a health check to confirm the API is running, and expects no parameters: `GET <url>/api/healthcheck`.
+## Requests and responses
 
-The `POST` endpoint at `POST <url>/api/screen` expects a JSON request body in the following format:
+The general flow for screening a file end-to-end is:
+
+1. Screening is started using a queue message.
+1. Screening progress can be regularly checked using an HTTP endpoint.
+1. When screening completes (either successfully or unsuccessfully), a completion report can be requested using an HTTP endpoint.
+1. After the completion report has been used, the progress and completion files can be cleaned up using an HTTP endpoint.
+
+### Healthcheck
+
+The `GET /api/healthcheck` endpoint is just a health check to confirm the API is running, and expects no parameters.
+
+It produces a `200 OK` response with a body like:
+
+```
+["Success"]
+```
+
+### Start screening
+
+The screening process is triggered via a queue message to the storage container's `start-screening` queue.  The queue message body expects the
+following JSON format:
 
 ```json
 {
-  "dataFileName": "data.csv",
-  "dataFilePath": "00ffd291-2ff2-4b65-46c5-08dd9ec03382/data/0d5a5bc6-b12c-4ed4-986e-517679b49f88",
-  "metaFileName": "meta.data.csv",
-  "metaFilePath:": "00ffd291-2ff2-4b65-46c5-08dd9ec03382/data/f9c951bc-85a0-48ab-a0be-8eab3fc8dcee"
+  "data_set_id": "<a unique identifier for a data set to undergo screening>",
+  "data_file_name": "<name of data file>",
+  "data_file_path": "<absolute path to data file's owning container>",
+  "data_file_sas_token": "<SAS token generated from storage account to read data file>",
+  "meta_file_name": "<name of meta file>",
+  "meta_file_path:": "<absolute path to meta file's owning container>",
+  "meta_file_sas_token": "<SAS token generated from storage account to read meta file>",
 }
 ```
 
+e.g.
+
+```json
+{
+  "data_set_id":"8ac520d9-7589-469d-8c14-08ded5ef9b4d",
+  "data_file_name":"absence_school.csv",
+  "data_file_path":"0d519b8b-b4c0-4afc-694b-08ded5ea9207/data/24a314dc-d815-481d-8eb0-9f2f9bc28ebe",
+  "data_file_sas_token":"sv=2026-02-06\u0026se=2026-06-29T21%3A09%3A41Z\u0026sr=b\u0026sp=r\u0026sig=8w7Bb8fejYahCVRx8fUwpYPkF9RbWCYRmxFf7t7nHOs%3D",
+  "meta_file_name":"absence_school.meta.csv",
+  "meta_file_path":"0d519b8b-b4c0-4afc-694b-08ded5ea9207/data/64dba375-4310-4053-8b4d-c510c014d255",
+  "meta_file_sas_token":"sv=2026-02-06\u0026se=2026-06-29T21%3A09%3A41Z\u0026sr=b\u0026sp=r\u0026sig=bmLzQhzd2slBxu8D9cu%2FzQa%2dF%2FvtZBpPi9m6TDy2AJc%3D"
+}
+```
+
+This triggers screening as a background process.
+
+
 > ℹ️ Path format is `<releaseVersionId>/data/<fileId>`.
 
-> ℹ️ Example files can be found in the "example-data" folder. When running locally (e.g. using Postman Desktop), these can be provided in the json body to `dateFilePath` and `metaFilePath` as relative paths within the local repo, e.g. `"dataFilePath": "example-data/pass.csv"`.
+### Screening progress
+
+The `GET /api/progress?data_set_id=<data set 1 id>&data_set_id=<data set 2 id>` endpoint allows the current screening progress for one or more data sets 
+to be checked, using the unique `data_set_id` values provided in the [Start screening](#start-screening) request.
+
+For instance, to check on the progress of the example provided in [Start screening](#start-screening), we would call:
+
+`GET /api/progress?data_set_id=8ac520d9-7589-469d-8c14-08ded5ef9b4d`
+
+which would produce a `200 OK` response with a body like:
+
+```json
+[
+  {
+    "data_set_id": "8ac520d9-7589-469d-8c14-08ded5ef9b4d",
+    "progress_report": {
+      "percentage_complete": 30.67,
+      "status": "Screening",
+      "completed": false
+    }
+  }
+]
+```
+
+When the value for `completed` for a data set is true, the screener has finished screening the file and a completion report will be available which will
+contain the full screening result. 
+
+### Completion report
+
+The `GET /api/completion-reports?data_set_id=<data set 1 id>&data_set_id=<data set 2 id>` endpoint allows the screening results for one or more data sets 
+to be checked, using the unique `data_set_id` values provided in the [Start screening](#start-screening) request.
+
+This can be used for any data sets that have finished screening, as identified by use of the `completed` flag in the response from the
+[Screening progress](#screening-progress) response.
+
+For instance, to check on the completion result of the example provided in [Start screening](#start-screening), we would call:
+
+`GET /api/completion-reports?data_set_id=8ac520d9-7589-469d-8c14-08ded5ef9b4d`
+
+which would produce a `200 OK` response with a body like:
+
+```json
+[
+  {
+    "data_set_id": "8ac520d9-7589-469d-8c14-08ded5ef9b4d",
+    "completion_report": {
+      "passed": true,
+      "api_suitable": false,
+      "overall_stage": "Complete",
+      "results_table": []
+    }
+  }
+]
+```
+
+### Delete progress and completion report files
+
+The `DELETE /api/progress-and-completion-files?data_set_id=<data set 1 id>&data_set_id=<data set 2 id>` endpoint allows the cleanup of screening
+progress files and completion reports for one or more data sets, using the unique `data_set_id` values provided in the
+[Start screening](#start-screening) request.
+
+This can be used for any data sets that have finished screening, as identified by use of the `completed` flag in the response from the
+[Screening progress](#screening-progress) response.
+
+For instance, to clear up progress and completion reports of the example provided in [Start screening](#start-screening), we would call:
+
+`DELETE /api/progress-and-completion-files?data_set_id=8ac520d9-7589-469d-8c14-08ded5ef9b4d`
+
+which would produce a `204 No Content` response.
 
 ## Testing
 
 Unit tests have been setup using [testthat](https://testthat.r-lib.org/) and [mirai](https://mirai.r-lib.org/index.html), you can run them locally in R using:
 
 ```
-testthat::test_dir("tests/testthat")
+testthat::test_dir("tests/testthat/tests/function_handlers")
+testthat::test_dir("tests/testthat/tests/utils")
 ```
 
-If one of the environment variables isn't set from "STORAGE_URL", "STORAGE_KEY" or "STORAGE_CONTAINER_NAME". Then the API will fallback to looking a local file, for example you can then supply the paths to the example-data in this repo
+If one of the environment variables isn't set from "STORAGE_URL" or "STORAGE_CONTAINER_NAME", the API will fallback to looking for local files.
+You can then supply the paths to the example-data in this repository, and SAS tokens can be omitted. For example:
 
 ```json
 {
-  "dataFileName": "pass.csv",
-  "dataFilePath": "example-data/pass.csv",
-  "metaFileName": "pass.data.csv",
-  "metaFilePath:": "example-data/pass.meta.csv"
+  "data_set_id":"8ac520d9-7589-469d-8c14-08ded5ef9b4d",
+  "data_file_name":"pass.csv",
+  "data_file_path":"example-data/pass.csv",
+  "meta_file_name":"pass.meta.csv",
+  "meta_file_path":"example-data/pass.meta.csv",
 }
 ```
 
@@ -214,25 +330,12 @@ request body
 
 ```json
 {
-  "dataFileName": "fail.csv",
-  "dataFilePath": "example-data/fail.csv",
-  "metaFileName": "fail.meta.csv",
-  "metaFilePath:": "example-data/fail.meta.csv"
+  "data_set_id":"8ac520d9-7589-469d-8c14-08ded5ef9b4d",
+  "data_file_name":"fail.csv",
+  "data_file_path":"example-data/fail.csv",
+  "meta_file_name":"fail.meta.csv",
+  "meta_file_path":"example-data/fail.meta.csv",
 }
 ```
 
-If the data and meta files supplied to the POST endpoint generate an error from `eesyscreener`, and you only want to generate a successful response for testing, replace the function call in `screen_controller.R`:
-
-```r
-result <- eesyscreener::screen_csv(data_file, meta_file, data_file_name, meta_file_name)
-```
-
-with
-
-```r
-write.csv(eesyscreener::example_data, "example_data.csv", row.names = FALSE)
-write.csv(eesyscreener::example_meta, "example_data.meta.csv", row.names = FALSE)
-result <- eesyscreener::screen_csv("example_data.csv", "example_data.meta.csv")
-```
-
-this will generate some new test data files that should always pass the screening.
+> ℹ️ Example files can be found in the "example-data" folder. When running locally (e.g. using Postman Desktop), these can be provided in the json body to `date_file_path` and `meta_file_path` as relative paths within the local repo, e.g. `"data_file_path": "example-data/pass.csv"`.
