@@ -13,4 +13,10 @@ else
   export AzureFunctionsJobHost__extensions__queues__batchSize=$((CONCURRENT_R_WORKERS - 1))
 fi
 
+# Expose the eesyscreener version as an environment variable for use in the R program.
+export EESYSCREENER_VERSION=$(cat /eesyscreener_version)
+
+# Expose the build version as an environment variable for use in the R program.
+export BUILD_VERSION=$(cat /build_version)
+
 exec /azure-functions-host/Microsoft.Azure.WebJobs.Script.WebHost

@@ -1,5 +1,12 @@
-FROM mcr.microsoft.com/azure-functions/dotnet:4-dotnet8.0
+FROM mcr.microsoft.com/azure-functions/dotnet:4.37.1-dotnet8.0
 
+# Used in the pipeline to provide a build version that matches the artifact version that
+# has been built, and that can be logged out on startup.
+#
+# Used in local development to force the rebuild of Docker images if breaking changes
+# have been introduced to this image that require immediate update for other developers.
+ARG BUILD_VERSION=2026-07-21
+       
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
     R_VERSION=4.5.2 \
@@ -37,21 +44,40 @@ RUN wget https://cdn.posit.co/r/debian-12/pkgs/r-${R_VERSION}_1_$(dpkg --print-a
 WORKDIR /home/site/wwwroot
 COPY / /home/site/wwwroot
 
+ARG CRAN_REPOSITORY_SNAPSHOT_VERSION=latest
+    
 # Install R packages using pre-complied binaries for Debian 12 (Bookworm)
-RUN R -e "options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/latest')); \
-          install.packages('pak'); \
-          install.packages( \
-            'duckdb', \
-            repos = sprintf( \
-                'https://p3m.dev/cran/latest/bin/linux/manylinux_2_28-%s/%s', \
-                R.version['arch'], \
-                substr(getRversion(), 1, 3) \
-            ) \
-          ); \
-          pak::pkg_install(c('dfe-analytical-services/eesyscreener@v0.3.2', 'deps::.'), upgrade = FALSE);"
+RUN R --vanilla -e "\
+    options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/${CRAN_REPOSITORY_SNAPSHOT_VERSION}')); \
+    install.packages('pak');" 
+
+RUN R --vanilla -e "\
+    options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/${CRAN_REPOSITORY_SNAPSHOT_VERSION}')); \
+    install.packages( \
+    'duckdb', \
+    repos = sprintf( \
+        'https://p3m.dev/cran/${CRAN_REPOSITORY_SNAPSHOT_VERSION}/bin/linux/manylinux_2_28-%s/%s', \
+        R.version['arch'], \
+        substr(getRversion(), 1, 3) \
+    ) \
+);"
+
+ARG EESYSCREENER_VERSION=0.3.2
+
+RUN R --vanilla -e "\
+    options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/bookworm/${CRAN_REPOSITORY_SNAPSHOT_VERSION}')); \
+    pak::pkg_install(c('dfe-analytical-services/eesyscreener@v${EESYSCREENER_VERSION}', 'deps::.'), upgrade = FALSE);"
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# Replace and Windows line endings with Linux ones.
+RUN sed -i 's/\r$//' /entrypoint.sh
+
+# Output the eesyscreener version used to build this image.
+RUN echo "${EESYSCREENER_VERSION}" > /eesyscreener_version && \
+    echo "${BUILD_VERSION}" > /build_version
+
 # Call entrypoint script to dynamically set the "batchSize" queue property
 # as an environment variable, based upon the value of "CONCURRENT_R_WORKERS".
 ENTRYPOINT ["/entrypoint.sh"]

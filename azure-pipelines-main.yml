@@ -28,13 +28,23 @@ jobs:
       clean: all
     steps:
       - task: Docker@2
-        displayName: Build and push Screener API Docker image
+        displayName: Build Screener API Docker image
         condition: and(succeeded(), eq(variables.IsBranchDeployable, true))
         inputs:
           containerRegistry: $(AcrServiceConnection)
           repository: ees-screener-api
-          command: buildAndPush
+          command: build
           Dockerfile: Dockerfile
           tags: $(Build.BuildNumber)
+          arguments: --build-arg BUILD_VERSION=$(Build.BuildNumber)
         env:
           DOCKER_BUILDKIT: 1
+
+      - task: Docker@2
+        displayName: Push Screener API Docker image
+        condition: and(succeeded(), eq(variables.IsBranchDeployable, true))
+        inputs:
+          containerRegistry: $(AcrServiceConnection)
+          repository: ees-screener-api
+          command: push
+          tags: $(Build.BuildNumber)

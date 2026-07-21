@@ -5,3 +5,6 @@
 example-data/
 README.md
 tests/
+.RData
+.Rhistory
+.Rproj.user
