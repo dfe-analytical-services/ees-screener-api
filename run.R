@@ -18,7 +18,7 @@ if (number_of_concurrent_workers > 0) {
 log_appender(stdout_log_appender)
 log_formatter(formatter_paste)
 
-log_info("Screener API starting with build version ", build_version, " and eesyscreener version ", eesyscreener_version)
+log_info("Screener API starting with build version", paste0('"', build_version, '"'), "and eesyscreener version", paste0('"', eesyscreener_version, '"'))
 
 create_server() |>
   plumber::pr_run(
